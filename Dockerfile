@@ -1,5 +1,5 @@
 # Build backend binary file
-FROM golang:1.22.2-alpine3.19 AS be-builder
+FROM golang:1.22.3-alpine3.19 AS be-builder
 ARG RELEASE_BUILD
 ENV RELEASE_BUILD=$RELEASE_BUILD
 WORKDIR /go/src/github.com/hocx/ezbookkeeping
