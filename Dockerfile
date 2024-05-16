@@ -9,7 +9,7 @@ RUN apk add git gcc g++ libc-dev
 RUN ./build.sh backend --no-lint --no-test
 
 # Build frontend files
-FROM --platform=$BUILDPLATFORM node:22.1.0-alpine3.19 AS fe-builder
+FROM --platform=$BUILDPLATFORM node:22.2.0-alpine3.19 AS fe-builder
 ARG RELEASE_BUILD
 ENV RELEASE_BUILD=$RELEASE_BUILD
 WORKDIR /go/src/github.com/hocx/ezbookkeeping
