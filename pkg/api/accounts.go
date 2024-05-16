@@ -3,12 +3,12 @@ package api
 import (
 	"sort"
 
-	"github.com/mayswind/ezbookkeeping/pkg/core"
-	"github.com/mayswind/ezbookkeeping/pkg/errs"
-	"github.com/mayswind/ezbookkeeping/pkg/log"
-	"github.com/mayswind/ezbookkeeping/pkg/models"
-	"github.com/mayswind/ezbookkeeping/pkg/services"
-	"github.com/mayswind/ezbookkeeping/pkg/validators"
+	"github.com/hocx/ezbookkeeping/pkg/core"
+	"github.com/hocx/ezbookkeeping/pkg/errs"
+	"github.com/hocx/ezbookkeeping/pkg/log"
+	"github.com/hocx/ezbookkeeping/pkg/models"
+	"github.com/hocx/ezbookkeeping/pkg/services"
+	"github.com/hocx/ezbookkeeping/pkg/validators"
 )
 
 // AccountsApi represents account api
@@ -412,16 +412,18 @@ func (a *AccountsApi) AccountDeleteHandler(c *core.Context) (any, *errs.Error) {
 
 func (a *AccountsApi) createNewAccountModel(uid int64, accountCreateReq *models.AccountCreateRequest, order int32) *models.Account {
 	return &models.Account{
-		Uid:          uid,
-		Name:         accountCreateReq.Name,
-		DisplayOrder: order,
-		Category:     accountCreateReq.Category,
-		Type:         accountCreateReq.Type,
-		Icon:         accountCreateReq.Icon,
-		Color:        accountCreateReq.Color,
-		Currency:     accountCreateReq.Currency,
-		Balance:      accountCreateReq.Balance,
-		Comment:      accountCreateReq.Comment,
+		Uid:            uid,
+		Name:           accountCreateReq.Name,
+		DisplayOrder:   order,
+		Category:       accountCreateReq.Category,
+		Type:           accountCreateReq.Type,
+		ExpirationDate: accountCreateReq.ExpirationDate,
+		OpenDate:       accountCreateReq.OpenDate,
+		Icon:           accountCreateReq.Icon,
+		Color:          accountCreateReq.Color,
+		Currency:       accountCreateReq.Currency,
+		Balance:        accountCreateReq.Balance,
+		Comment:        accountCreateReq.Comment,
 	}
 }
 
@@ -441,18 +443,22 @@ func (a *AccountsApi) createSubAccountModels(uid int64, accountCreateReq *models
 
 func (a *AccountsApi) getToUpdateAccount(uid int64, accountModifyReq *models.AccountModifyRequest, oldAccount *models.Account) *models.Account {
 	newAccount := &models.Account{
-		AccountId: oldAccount.AccountId,
-		Uid:       uid,
-		Name:      accountModifyReq.Name,
-		Category:  accountModifyReq.Category,
-		Icon:      accountModifyReq.Icon,
-		Color:     accountModifyReq.Color,
-		Comment:   accountModifyReq.Comment,
-		Hidden:    accountModifyReq.Hidden,
+		AccountId:      oldAccount.AccountId,
+		Uid:            uid,
+		Name:           accountModifyReq.Name,
+		Category:       accountModifyReq.Category,
+		ExpirationDate: accountModifyReq.ExpirationDate,
+		OpenDate:       accountModifyReq.OpenDate,
+		Icon:           accountModifyReq.Icon,
+		Color:          accountModifyReq.Color,
+		Comment:        accountModifyReq.Comment,
+		Hidden:         accountModifyReq.Hidden,
 	}
 
 	if newAccount.Name != oldAccount.Name ||
 		newAccount.Category != oldAccount.Category ||
+		newAccount.ExpirationDate != oldAccount.ExpirationDate ||
+		newAccount.OpenDate != oldAccount.OpenDate ||
 		newAccount.Icon != oldAccount.Icon ||
 		newAccount.Color != oldAccount.Color ||
 		newAccount.Comment != oldAccount.Comment ||

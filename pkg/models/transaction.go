@@ -5,8 +5,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/mayswind/ezbookkeeping/pkg/errs"
-	"github.com/mayswind/ezbookkeeping/pkg/utils"
+	"github.com/hocx/ezbookkeeping/pkg/errs"
+	"github.com/hocx/ezbookkeeping/pkg/utils"
 )
 
 // TransactionType represents transaction type

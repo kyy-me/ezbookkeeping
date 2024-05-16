@@ -89,7 +89,7 @@
                     </div>
                 </div>
                 <div class="display-flex full-line">
-                    <div :class="{ 'statistics-list-item-overview-amount': true, 'text-color-teal': query.chartDataType === allChartDataTypes.ExpenseByAccount.type || query.chartDataType === allChartDataTypes.ExpenseByPrimaryCategory.type || query.chartDataType === allChartDataTypes.ExpenseBySecondaryCategory.type, 'text-color-red': query.chartDataType === allChartDataTypes.IncomeByAccount.type || query.chartDataType === allChartDataTypes.IncomeByPrimaryCategory.type || query.chartDataType === allChartDataTypes.IncomeBySecondaryCategory.type }">
+                    <div :class="{ 'statistics-list-item-overview-amount': true, 'text-color-red': query.chartDataType === allChartDataTypes.ExpenseByAccount.type || query.chartDataType === allChartDataTypes.ExpenseByPrimaryCategory.type || query.chartDataType === allChartDataTypes.ExpenseBySecondaryCategory.type, 'text-color-teal': query.chartDataType === allChartDataTypes.IncomeByAccount.type || query.chartDataType === allChartDataTypes.IncomeByPrimaryCategory.type || query.chartDataType === allChartDataTypes.IncomeBySecondaryCategory.type }">
                         <span v-if="!loading && statisticsData && statisticsData.items && statisticsData.items.length">
                             {{ getDisplayAmount(statisticsData.totalAmount, defaultCurrency) }}
                         </span>
@@ -555,7 +555,8 @@ export default {
         getDisplayCurrency(value, currencyCode) {
             return this.$locale.getDisplayCurrency(value, currencyCode, {
                 currencyDisplayMode: this.settingsStore.appSettings.currencyDisplayMode,
-                enableThousandsSeparator: this.settingsStore.appSettings.thousandsSeparator
+                enableThousandsSeparator: this.settingsStore.appSettings.thousandsSeparator,
+                enableDecimalPoint: this.settingsStore.appSettings.decimalPoint,
             });
         },
         getDisplayPercent(value, precision, lowPrecisionValue) {

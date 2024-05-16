@@ -144,3 +144,14 @@ dist/
 # Visual Studio Code
 .vscode/
 *.code-workspace
+
+# Air
+.air/
+
+# Yarn
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

@@ -4,53 +4,140 @@
             <f7-nav-left :back-link="$t('Back')"></f7-nav-left>
             <f7-nav-title :title="$t(title)"></f7-nav-title>
             <f7-nav-right>
-                <f7-link icon-f7="ellipsis" :class="{ 'disabled': editAccountId || account.type !== allAccountTypes.MultiSubAccounts }" @click="showMoreActionSheet = true"></f7-link>
-                <f7-link :class="{ 'disabled': isInputEmpty() || submitting }" :text="$t(saveButtonTitle)" @click="save"></f7-link>
+                <f7-link
+                    icon-f7="ellipsis"
+                    :class="{
+                        disabled:
+                            editAccountId ||
+                            account.type !== allAccountTypes.MultiSubAccounts,
+                    }"
+                    @click="showMoreActionSheet = true"
+                ></f7-link>
+                <f7-link
+                    :class="{ disabled: isInputEmpty() || submitting }"
+                    :text="$t(saveButtonTitle)"
+                    @click="save"
+                ></f7-link>
             </f7-nav-right>
         </f7-navbar>
 
-        <f7-list strong inset dividers class="margin-vertical skeleton-text" v-if="loading">
-            <f7-list-item class="list-item-with-header-and-title" header="Account Category" title="Category"></f7-list-item>
-            <f7-list-item class="list-item-with-header-and-title" header="Account Type" title="Account Type"></f7-list-item>
+        <f7-list
+            strong
+            inset
+            dividers
+            class="margin-vertical skeleton-text"
+            v-if="loading"
+        >
+            <f7-list-item
+                class="list-item-with-header-and-title"
+                header="Account Category"
+                title="Category"
+            ></f7-list-item>
+            <f7-list-item
+                class="list-item-with-header-and-title"
+                header="Account Type"
+                title="Account Type"
+            ></f7-list-item>
         </f7-list>
 
-        <f7-list form strong inset dividers class="margin-vertical" v-else-if="!loading">
+        <f7-list
+            form
+            strong
+            inset
+            dividers
+            class="margin-vertical"
+            v-else-if="!loading"
+        >
             <f7-list-item
-                link="#" no-chevron
+                link="#"
+                no-chevron
                 class="list-item-with-header-and-title"
                 :header="$t('Account Category')"
                 :title="getAccountCategoryName(account.category)"
                 @click="showAccountCategorySheet = true"
             >
-                <list-item-selection-sheet value-type="item"
-                                           key-field="id" value-field="id" title-field="displayName"
-                                           icon-field="defaultAccountIconId" icon-type="account"
-                                           :items="allAccountCategories"
-                                           v-model:show="showAccountCategorySheet"
-                                           v-model="account.category">
+                <list-item-selection-sheet
+                    value-type="item"
+                    key-field="id"
+                    value-field="id"
+                    title-field="displayName"
+                    icon-field="defaultAccountIconId"
+                    icon-type="account"
+                    :items="allAccountCategories"
+                    v-model:show="showAccountCategorySheet"
+                    v-model="account.category"
+                >
                 </list-item-selection-sheet>
             </f7-list-item>
 
             <f7-list-item
-                link="#" no-chevron
+                link="#"
+                no-chevron
                 class="list-item-with-header-and-title"
-                :class="{ 'disabled': editAccountId }"
+                :class="{ disabled: editAccountId }"
                 :header="$t('Account Type')"
                 :title="getAccountTypeName(account.type)"
                 @click="showAccountTypeSheet = true"
             >
-                <list-item-selection-sheet value-type="item"
-                                           key-field="id" value-field="id" title-field="displayName"
-                                           :items="allAccountTypesArray"
-                                           v-model:show="showAccountTypeSheet"
-                                           v-model="account.type">
+                <list-item-selection-sheet
+                    value-type="item"
+                    key-field="id"
+                    value-field="id"
+                    title-field="displayName"
+                    :items="allAccountTypesArray"
+                    v-model:show="showAccountTypeSheet"
+                    v-model="account.type"
+                >
                 </list-item-selection-sheet>
+            </f7-list-item>
+
+            <f7-list-item
+                class="list-item-with-header-and-title"
+                link="#"
+                no-chevron
+                :header="$t('Open Date')"
+                v-if="account.category === ACCOUNT_CATEGORY_SAVING"
+                :title="accountDisplayTime(account.openDate)"
+                @click="showOpenDateTimeSheet = true"
+            >
+                <date-time-selection-sheet
+                    v-model:show="showOpenDateTimeSheet"
+                    v-model="account.openDate"
+                >
+                </date-time-selection-sheet>
+            </f7-list-item>
+
+            <f7-list-item
+                class="list-item-with-header-and-title"
+                link="#"
+                no-chevron
+                :header="$t('Expiration Date')"
+                v-if="account.category === ACCOUNT_CATEGORY_SAVING"
+                :title="accountDisplayTime(account.expirationDate)"
+                @click="showExpirationDateTimeSheet = true"
+            >
+                <date-time-selection-sheet
+                    v-model:show="showExpirationDateTimeSheet"
+                    v-model="account.expirationDate"
+                >
+                </date-time-selection-sheet>
             </f7-list-item>
         </f7-list>
 
-        <f7-list strong inset dividers class="margin-vertical skeleton-text" v-if="loading">
-            <f7-list-input label="Account Name" placeholder="Your account name"></f7-list-input>
-            <f7-list-item class="list-item-with-header-and-title list-item-with-multi-item">
+        <f7-list
+            strong
+            inset
+            dividers
+            class="margin-vertical skeleton-text"
+            v-if="loading"
+        >
+            <f7-list-input
+                label="Account Name"
+                placeholder="Your account name"
+            ></f7-list-input>
+            <f7-list-item
+                class="list-item-with-header-and-title list-item-with-multi-item"
+            >
                 <template #default>
                     <div class="grid grid-cols-2">
                         <div class="list-item-subitem no-chevron">
@@ -61,8 +148,12 @@
                                             <span>Account Icon</span>
                                         </div>
                                         <div class="item-title">
-                                            <div class="list-item-custom-title no-padding">
-                                                <f7-icon f7="app_fill"></f7-icon>
+                                            <div
+                                                class="list-item-custom-title no-padding"
+                                            >
+                                                <f7-icon
+                                                    f7="app_fill"
+                                                ></f7-icon>
                                             </div>
                                         </div>
                                     </div>
@@ -77,8 +168,12 @@
                                             <span>Account Color</span>
                                         </div>
                                         <div class="item-title">
-                                            <div class="list-item-custom-title no-padding">
-                                                <f7-icon f7="app_fill"></f7-icon>
+                                            <div
+                                                class="list-item-custom-title no-padding"
+                                            >
+                                                <f7-icon
+                                                    f7="app_fill"
+                                                ></f7-icon>
                                             </div>
                                         </div>
                                     </div>
@@ -88,13 +183,39 @@
                     </div>
                 </template>
             </f7-list-item>
-            <f7-list-item class="list-item-with-header-and-title list-item-no-item-after" header="Currency" title="Currency" :link="editAccountId ? null : '#'"></f7-list-item>
-            <f7-list-item class="list-item-with-header-and-title" header="Account Balance" title="Balance"></f7-list-item>
-            <f7-list-item class="list-item-toggle" header="Visible" after="True"></f7-list-item>
-            <f7-list-input label="Description" type="textarea" placeholder="Your account description (optional)"></f7-list-input>
+            <f7-list-item
+                class="list-item-with-header-and-title list-item-no-item-after"
+                header="Currency"
+                title="Currency"
+                :link="editAccountId ? null : '#'"
+            ></f7-list-item>
+            <f7-list-item
+                class="list-item-with-header-and-title"
+                header="Account Balance"
+                title="Balance"
+            ></f7-list-item>
+            <f7-list-item
+                class="list-item-toggle"
+                header="Visible"
+                after="True"
+            ></f7-list-item>
+            <f7-list-input
+                label="Description"
+                type="textarea"
+                placeholder="Your account description (optional)"
+            ></f7-list-input>
         </f7-list>
 
-        <f7-list form strong inset dividers class="margin-vertical" v-else-if="!loading && account.type === allAccountTypes.SingleAccount">
+        <f7-list
+            form
+            strong
+            inset
+            dividers
+            class="margin-vertical"
+            v-else-if="
+                !loading && account.type === allAccountTypes.SingleAccount
+            "
+        >
             <f7-list-input
                 type="text"
                 clear-button
@@ -103,50 +224,78 @@
                 v-model:value="account.name"
             ></f7-list-input>
 
-            <f7-list-item class="list-item-with-header-and-title list-item-with-multi-item">
+            <f7-list-item
+                class="list-item-with-header-and-title list-item-with-multi-item"
+            >
                 <template #default>
                     <div class="grid grid-cols-2">
                         <div class="list-item-subitem no-chevron">
-                            <a class="item-link" href="#" @click="account.showIconSelectionSheet = true">
+                            <a
+                                class="item-link"
+                                href="#"
+                                @click="account.showIconSelectionSheet = true"
+                            >
                                 <div class="item-content">
                                     <div class="item-inner">
                                         <div class="item-header">
-                                            <span>{{ $t('Account Icon') }}</span>
+                                            <span>{{
+                                                $t("Account Icon")
+                                            }}</span>
                                         </div>
                                         <div class="item-title">
-                                            <div class="list-item-custom-title no-padding">
-                                                <ItemIcon icon-type="account" :icon-id="account.icon" :color="account.color"></ItemIcon>
+                                            <div
+                                                class="list-item-custom-title no-padding"
+                                            >
+                                                <ItemIcon
+                                                    icon-type="account"
+                                                    :icon-id="account.icon"
+                                                    :color="account.color"
+                                                ></ItemIcon>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </a>
 
-                            <icon-selection-sheet :all-icon-infos="allAccountIcons"
-                                                  :color="account.color"
-                                                  v-model:show="account.showIconSelectionSheet"
-                                                  v-model="account.icon"
+                            <icon-selection-sheet
+                                :all-icon-infos="allAccountIcons"
+                                :color="account.color"
+                                v-model:show="account.showIconSelectionSheet"
+                                v-model="account.icon"
                             ></icon-selection-sheet>
                         </div>
                         <div class="list-item-subitem no-chevron">
-                            <a class="item-link" href="#" @click="account.showColorSelectionSheet = true">
+                            <a
+                                class="item-link"
+                                href="#"
+                                @click="account.showColorSelectionSheet = true"
+                            >
                                 <div class="item-content">
                                     <div class="item-inner">
                                         <div class="item-header">
-                                            <span>{{ $t('Account Color') }}</span>
+                                            <span>{{
+                                                $t("Account Color")
+                                            }}</span>
                                         </div>
                                         <div class="item-title">
-                                            <div class="list-item-custom-title no-padding">
-                                                <ItemIcon icon-type="fixed-f7" icon-id="app_fill" :color="account.color"></ItemIcon>
+                                            <div
+                                                class="list-item-custom-title no-padding"
+                                            >
+                                                <ItemIcon
+                                                    icon-type="fixed-f7"
+                                                    icon-id="app_fill"
+                                                    :color="account.color"
+                                                ></ItemIcon>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </a>
 
-                            <color-selection-sheet :all-color-infos="allAccountColors"
-                                                   v-model:show="account.showColorSelectionSheet"
-                                                   v-model="account.color"
+                            <color-selection-sheet
+                                :all-color-infos="allAccountColors"
+                                v-model:show="account.showColorSelectionSheet"
+                                v-model="account.color"
                             ></color-selection-sheet>
                         </div>
                     </div>
@@ -155,41 +304,66 @@
 
             <f7-list-item
                 class="list-item-with-header-and-title list-item-no-item-after"
-                :class="{ 'disabled': editAccountId }"
+                :class="{ disabled: editAccountId }"
                 :header="$t('Currency')"
                 :no-chevron="!!editAccountId"
-                smart-select :smart-select-params="{ openIn: 'popup', popupPush: true, closeOnSelect: true, scrollToSelectedItem: true, searchbar: true, searchbarPlaceholder: $t('Currency Name'), searchbarDisableText: $t('Cancel'), appendSearchbarNotFound: $t('No results'), pageTitle: $t('Currency Name'), popupCloseLinkText: $t('Done') }"
+                smart-select
+                :smart-select-params="{
+                    openIn: 'popup',
+                    popupPush: true,
+                    closeOnSelect: true,
+                    scrollToSelectedItem: true,
+                    searchbar: true,
+                    searchbarPlaceholder: $t('Currency Name'),
+                    searchbarDisableText: $t('Cancel'),
+                    appendSearchbarNotFound: $t('No results'),
+                    pageTitle: $t('Currency Name'),
+                    popupCloseLinkText: $t('Done'),
+                }"
             >
                 <template #title>
                     <div class="no-padding no-margin">
-                        <span>{{ getCurrencyName(account.currency) }}&nbsp;</span>
+                        <span
+                            >{{ getCurrencyName(account.currency) }}&nbsp;</span
+                        >
                         <small class="smaller">{{ account.currency }}</small>
                     </div>
                 </template>
-                <select autocomplete="transaction-currency" v-model="account.currency">
-                    <option :value="currency.code"
-                            :key="currency.code"
-                            v-for="currency in allCurrencies">{{ currency.displayName }}</option>
+                <select
+                    autocomplete="transaction-currency"
+                    v-model="account.currency"
+                >
+                    <option
+                        :value="currency.code"
+                        :key="currency.code"
+                        v-for="currency in allCurrencies"
+                    >
+                        {{ currency.displayName }}
+                    </option>
                 </select>
             </f7-list-item>
 
             <f7-list-item
-                link="#" no-chevron
+                link="#"
+                no-chevron
                 class="list-item-with-header-and-title"
-                :class="{ 'disabled': editAccountId }"
                 :header="$t('Account Balance')"
                 :title="getAccountBalance(account)"
                 @click="account.showBalanceSheet = true"
             >
-                <number-pad-sheet :min-value="allowedMinAmount"
-                                  :max-value="allowedMaxAmount"
-                                  v-model:show="account.showBalanceSheet"
-                                  v-model="account.balance"
+                <number-pad-sheet
+                    :min-value="allowedMinAmount"
+                    :max-value="allowedMaxAmount"
+                    v-model:show="account.showBalanceSheet"
+                    v-model="account.balance"
                 ></number-pad-sheet>
             </f7-list-item>
 
             <f7-list-item :title="$t('Visible')" v-if="editAccountId">
-                <f7-toggle :checked="account.visible" @toggle:change="account.visible = $event"></f7-toggle>
+                <f7-toggle
+                    :checked="account.visible"
+                    @toggle:change="account.visible = $event"
+                ></f7-toggle>
             </f7-list-item>
 
             <f7-list-input
@@ -202,7 +376,16 @@
             ></f7-list-input>
         </f7-list>
 
-        <f7-list form strong inset dividers class="margin-vertical" v-else-if="!loading && account.type === allAccountTypes.MultiSubAccounts">
+        <f7-list
+            form
+            strong
+            inset
+            dividers
+            class="margin-vertical"
+            v-else-if="
+                !loading && account.type === allAccountTypes.MultiSubAccounts
+            "
+        >
             <f7-list-input
                 type="text"
                 clear-button
@@ -211,50 +394,78 @@
                 v-model:value="account.name"
             ></f7-list-input>
 
-            <f7-list-item class="list-item-with-header-and-title list-item-with-multi-item">
+            <f7-list-item
+                class="list-item-with-header-and-title list-item-with-multi-item"
+            >
                 <template #default>
                     <div class="grid grid-cols-2">
                         <div class="list-item-subitem no-chevron">
-                            <a class="item-link" href="#" @click="account.showIconSelectionSheet = true">
+                            <a
+                                class="item-link"
+                                href="#"
+                                @click="account.showIconSelectionSheet = true"
+                            >
                                 <div class="item-content">
                                     <div class="item-inner">
                                         <div class="item-header">
-                                            <span>{{ $t('Account Icon') }}</span>
+                                            <span>{{
+                                                $t("Account Icon")
+                                            }}</span>
                                         </div>
                                         <div class="item-title">
-                                            <div class="list-item-custom-title no-padding">
-                                                <ItemIcon icon-type="account" :icon-id="account.icon" :color="account.color"></ItemIcon>
+                                            <div
+                                                class="list-item-custom-title no-padding"
+                                            >
+                                                <ItemIcon
+                                                    icon-type="account"
+                                                    :icon-id="account.icon"
+                                                    :color="account.color"
+                                                ></ItemIcon>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </a>
 
-                            <icon-selection-sheet :all-icon-infos="allAccountIcons"
-                                                  :color="account.color"
-                                                  v-model:show="account.showIconSelectionSheet"
-                                                  v-model="account.icon"
+                            <icon-selection-sheet
+                                :all-icon-infos="allAccountIcons"
+                                :color="account.color"
+                                v-model:show="account.showIconSelectionSheet"
+                                v-model="account.icon"
                             ></icon-selection-sheet>
                         </div>
                         <div class="list-item-subitem no-chevron">
-                            <a class="item-link" href="#" @click="account.showColorSelectionSheet = true">
+                            <a
+                                class="item-link"
+                                href="#"
+                                @click="account.showColorSelectionSheet = true"
+                            >
                                 <div class="item-content">
                                     <div class="item-inner">
                                         <div class="item-header">
-                                            <span>{{ $t('Account Color') }}</span>
+                                            <span>{{
+                                                $t("Account Color")
+                                            }}</span>
                                         </div>
                                         <div class="item-title">
-                                            <div class="list-item-custom-title no-padding">
-                                                <ItemIcon icon-type="fixed-f7" icon-id="app_fill" :color="account.color"></ItemIcon>
+                                            <div
+                                                class="list-item-custom-title no-padding"
+                                            >
+                                                <ItemIcon
+                                                    icon-type="fixed-f7"
+                                                    icon-id="app_fill"
+                                                    :color="account.color"
+                                                ></ItemIcon>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </a>
 
-                            <color-selection-sheet :all-color-infos="allAccountColors"
-                                                   v-model:show="account.showColorSelectionSheet"
-                                                   v-model="account.color"
+                            <color-selection-sheet
+                                :all-color-infos="allAccountColors"
+                                v-model:show="account.showColorSelectionSheet"
+                                v-model="account.color"
                             ></color-selection-sheet>
                         </div>
                     </div>
@@ -262,7 +473,10 @@
             </f7-list-item>
 
             <f7-list-item :title="$t('Visible')" v-if="editAccountId">
-                <f7-toggle :checked="account.visible" @toggle:change="account.visible = $event"></f7-toggle>
+                <f7-toggle
+                    :checked="account.visible"
+                    @toggle:change="account.visible = $event"
+                ></f7-toggle>
             </f7-list-item>
 
             <f7-list-input
@@ -275,16 +489,31 @@
             ></f7-list-input>
         </f7-list>
 
-        <f7-block class="no-padding no-margin" v-if="!loading && account.type === allAccountTypes.MultiSubAccounts">
-            <f7-list strong inset dividers class="subaccount-edit-list margin-vertical"
-                     :key="idx"
-                     v-for="(subAccount, idx) in subAccounts">
+        <f7-block
+            class="no-padding no-margin"
+            v-if="!loading && account.type === allAccountTypes.MultiSubAccounts"
+        >
+            <f7-list
+                strong
+                inset
+                dividers
+                class="subaccount-edit-list margin-vertical"
+                :key="idx"
+                v-for="(subAccount, idx) in subAccounts"
+            >
                 <f7-list-item group-title>
-                    <small>{{ $t('Sub Account') + ' #' + (idx + 1) }}</small>
-                    <f7-button rasied fill class="subaccount-delete-button" color="red" icon-f7="trash" icon-size="16px"
-                               :tooltip="$t('Remove Sub-account')"
-                               v-if="!editAccountId"
-                               @click="removeSubAccount(subAccount, false)">
+                    <small>{{ $t("Sub Account") + " #" + (idx + 1) }}</small>
+                    <f7-button
+                        rasied
+                        fill
+                        class="subaccount-delete-button"
+                        color="red"
+                        icon-f7="trash"
+                        icon-size="16px"
+                        :tooltip="$t('Remove Sub-account')"
+                        v-if="!editAccountId"
+                        @click="removeSubAccount(subAccount, false)"
+                    >
                     </f7-button>
                 </f7-list-item>
 
@@ -296,50 +525,92 @@
                     v-model:value="subAccount.name"
                 ></f7-list-input>
 
-                <f7-list-item class="list-item-with-header-and-title list-item-with-multi-item">
+                <f7-list-item
+                    class="list-item-with-header-and-title list-item-with-multi-item"
+                >
                     <template #default>
                         <div class="grid grid-cols-2">
                             <div class="list-item-subitem no-chevron">
-                                <a class="item-link" href="#" @click="subAccount.showIconSelectionSheet = true">
+                                <a
+                                    class="item-link"
+                                    href="#"
+                                    @click="
+                                        subAccount.showIconSelectionSheet = true
+                                    "
+                                >
                                     <div class="item-content">
                                         <div class="item-inner">
                                             <div class="item-header">
-                                                <span>{{ $t('Sub-account Icon') }}</span>
+                                                <span>{{
+                                                    $t("Sub-account Icon")
+                                                }}</span>
                                             </div>
                                             <div class="item-title">
-                                                <div class="list-item-custom-title no-padding">
-                                                    <ItemIcon icon-type="account" :icon-id="subAccount.icon" :color="subAccount.color"></ItemIcon>
+                                                <div
+                                                    class="list-item-custom-title no-padding"
+                                                >
+                                                    <ItemIcon
+                                                        icon-type="account"
+                                                        :icon-id="
+                                                            subAccount.icon
+                                                        "
+                                                        :color="
+                                                            subAccount.color
+                                                        "
+                                                    ></ItemIcon>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </a>
 
-                                <icon-selection-sheet :all-icon-infos="allAccountIcons"
-                                                      :color="subAccount.color"
-                                                      v-model:show="subAccount.showIconSelectionSheet"
-                                                      v-model="subAccount.icon"
+                                <icon-selection-sheet
+                                    :all-icon-infos="allAccountIcons"
+                                    :color="subAccount.color"
+                                    v-model:show="
+                                        subAccount.showIconSelectionSheet
+                                    "
+                                    v-model="subAccount.icon"
                                 ></icon-selection-sheet>
                             </div>
                             <div class="list-item-subitem no-chevron">
-                                <a class="item-link" href="#" @click="subAccount.showColorSelectionSheet = true">
+                                <a
+                                    class="item-link"
+                                    href="#"
+                                    @click="
+                                        subAccount.showColorSelectionSheet = true
+                                    "
+                                >
                                     <div class="item-content">
                                         <div class="item-inner">
                                             <div class="item-header">
-                                                <span>{{ $t('Sub-account Color') }}</span>
+                                                <span>{{
+                                                    $t("Sub-account Color")
+                                                }}</span>
                                             </div>
                                             <div class="item-title">
-                                                <div class="list-item-custom-title no-padding">
-                                                    <ItemIcon icon-type="fixed-f7" icon-id="app_fill" :color="subAccount.color"></ItemIcon>
+                                                <div
+                                                    class="list-item-custom-title no-padding"
+                                                >
+                                                    <ItemIcon
+                                                        icon-type="fixed-f7"
+                                                        icon-id="app_fill"
+                                                        :color="
+                                                            subAccount.color
+                                                        "
+                                                    ></ItemIcon>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </a>
 
-                                <color-selection-sheet :all-color-infos="allAccountColors"
-                                                       v-model:show="subAccount.showColorSelectionSheet"
-                                                       v-model="subAccount.color"
+                                <color-selection-sheet
+                                    :all-color-infos="allAccountColors"
+                                    v-model:show="
+                                        subAccount.showColorSelectionSheet
+                                    "
+                                    v-model="subAccount.color"
                                 ></color-selection-sheet>
                             </div>
                         </div>
@@ -348,41 +619,71 @@
 
                 <f7-list-item
                     class="list-item-with-header-and-title list-item-no-item-after"
-                    :class="{ 'disabled': editAccountId }"
+                    :class="{ disabled: editAccountId }"
                     :header="$t('Currency')"
                     :no-chevron="!!editAccountId"
-                    smart-select :smart-select-params="{ openIn: 'popup', popupPush: true, closeOnSelect: true, scrollToSelectedItem: true, searchbar: true, searchbarPlaceholder: $t('Currency Name'), searchbarDisableText: $t('Cancel'), appendSearchbarNotFound: $t('No results'), pageTitle: $t('Currency Name'), popupCloseLinkText: $t('Done') }"
+                    smart-select
+                    :smart-select-params="{
+                        openIn: 'popup',
+                        popupPush: true,
+                        closeOnSelect: true,
+                        scrollToSelectedItem: true,
+                        searchbar: true,
+                        searchbarPlaceholder: $t('Currency Name'),
+                        searchbarDisableText: $t('Cancel'),
+                        appendSearchbarNotFound: $t('No results'),
+                        pageTitle: $t('Currency Name'),
+                        popupCloseLinkText: $t('Done'),
+                    }"
                 >
                     <template #title>
                         <div class="no-padding no-margin">
-                            <span>{{ getCurrencyName(subAccount.currency) }}&nbsp;</span>
-                            <small class="smaller">{{ subAccount.currency }}</small>
+                            <span
+                                >{{
+                                    getCurrencyName(subAccount.currency)
+                                }}&nbsp;</span
+                            >
+                            <small class="smaller">{{
+                                subAccount.currency
+                            }}</small>
                         </div>
                     </template>
-                    <select autocomplete="transaction-currency" v-model="subAccount.currency">
-                        <option :value="currency.code"
-                                :key="currency.code"
-                                v-for="currency in allCurrencies">{{ currency.displayName }}</option>
+                    <select
+                        autocomplete="transaction-currency"
+                        v-model="subAccount.currency"
+                    >
+                        <option
+                            :value="currency.code"
+                            :key="currency.code"
+                            v-for="currency in allCurrencies"
+                        >
+                            {{ currency.displayName }}
+                        </option>
                     </select>
                 </f7-list-item>
 
                 <f7-list-item
-                    link="#" no-chevron
+                    link="#"
+                    no-chevron
                     class="list-item-with-header-and-title"
-                    :class="{ 'disabled': editAccountId }"
+                    :class="{ disabled: editAccountId }"
                     :header="$t('Sub-account Balance')"
                     :title="getAccountBalance(subAccount)"
                     @click="subAccount.showBalanceSheet = true"
                 >
-                    <number-pad-sheet :min-value="allowedMinAmount"
-                                      :max-value="allowedMaxAmount"
-                                      v-model:show="subAccount.showBalanceSheet"
-                                      v-model="subAccount.balance"
+                    <number-pad-sheet
+                        :min-value="allowedMinAmount"
+                        :max-value="allowedMaxAmount"
+                        v-model:show="subAccount.showBalanceSheet"
+                        v-model="subAccount.balance"
                     ></number-pad-sheet>
                 </f7-list-item>
 
                 <f7-list-item :title="$t('Visible')" v-if="editAccountId">
-                    <f7-toggle :checked="subAccount.visible" @toggle:change="subAccount.visible = $event"></f7-toggle>
+                    <f7-toggle
+                        :checked="subAccount.visible"
+                        @toggle:change="subAccount.visible = $event"
+                    ></f7-toggle>
                 </f7-list-item>
 
                 <f7-list-input
@@ -396,47 +697,71 @@
             </f7-list>
         </f7-block>
 
-        <f7-actions close-by-outside-click close-on-escape :opened="showMoreActionSheet" @actions:closed="showMoreActionSheet = false">
+        <f7-actions
+            close-by-outside-click
+            close-on-escape
+            :opened="showMoreActionSheet"
+            @actions:closed="showMoreActionSheet = false"
+        >
             <f7-actions-group>
-                <f7-actions-button @click="addSubAccount">{{ $t('Add Sub-account') }}</f7-actions-button>
+                <f7-actions-button @click="addSubAccount">{{
+                    $t("Add Sub-account")
+                }}</f7-actions-button>
             </f7-actions-group>
             <f7-actions-group>
-                <f7-actions-button bold close>{{ $t('Cancel') }}</f7-actions-button>
+                <f7-actions-button bold close>{{
+                    $t("Cancel")
+                }}</f7-actions-button>
             </f7-actions-group>
         </f7-actions>
 
-        <f7-actions close-by-outside-click close-on-escape :opened="showDeleteActionSheet" @actions:closed="showDeleteActionSheet = false">
+        <f7-actions
+            close-by-outside-click
+            close-on-escape
+            :opened="showDeleteActionSheet"
+            @actions:closed="showDeleteActionSheet = false"
+        >
             <f7-actions-group>
-                <f7-actions-label>{{ $t('Are you sure you want to remove this sub-account?') }}</f7-actions-label>
-                <f7-actions-button color="red" @click="removeSubAccount(subAccountToDelete, true)">{{ $t('Remove') }}</f7-actions-button>
+                <f7-actions-label>{{
+                    $t("Are you sure you want to remove this sub-account?")
+                }}</f7-actions-label>
+                <f7-actions-button
+                    color="red"
+                    @click="removeSubAccount(subAccountToDelete, true)"
+                    >{{ $t("Remove") }}</f7-actions-button
+                >
             </f7-actions-group>
             <f7-actions-group>
-                <f7-actions-button bold close>{{ $t('Cancel') }}</f7-actions-button>
+                <f7-actions-button bold close>{{
+                    $t("Cancel")
+                }}</f7-actions-button>
             </f7-actions-group>
         </f7-actions>
     </f7-page>
 </template>
 
 <script>
-import { mapStores } from 'pinia';
-import { useSettingsStore } from '@/stores/setting.js';
-import { useAccountsStore } from '@/stores/account.js';
-
-import accountConstants from '@/consts/account.js';
-import iconConstants from '@/consts/icon.js';
-import colorConstants from '@/consts/color.js';
-import transactionConstants from '@/consts/transaction.js';
-import { getNameByKeyValue } from '@/lib/common.js';
+import { mapStores } from "pinia";
+import { useSettingsStore } from "@/stores/setting.js";
+import { useAccountsStore } from "@/stores/account.js";
+import { useUserStore } from "@/stores/user.js";
+import accountConstants, { ACCOUNT_CATEGORY_SAVING } from "@/consts/account.js";
+import iconConstants from "@/consts/icon.js";
+import colorConstants from "@/consts/color.js";
+import transactionConstants from "@/consts/transaction.js";
+import { getNameByKeyValue } from "@/lib/common.js";
 import {
     setAccountModelByAnotherAccount,
-    setAccountSuitableIcon
-} from '@/lib/account.js';
+    setAccountSuitableIcon,
+} from "@/lib/account.js";
+import {
+    getTimezoneOffsetMinutes,
+    getBrowserTimezoneOffsetMinutes,
+    getActualUnixTimeForStore,
+} from "@/lib/datetime.js";
 
 export default {
-    props: [
-        'f7route',
-        'f7router'
-    ],
+    props: ["f7route", "f7router"],
     data() {
         const accountsStore = useAccountsStore();
         const newAccount = accountsStore.generateNewAccountModel();
@@ -455,23 +780,26 @@ export default {
             showAccountCategorySheet: false,
             showAccountTypeSheet: false,
             showMoreActionSheet: false,
-            showDeleteActionSheet: false
+            showDeleteActionSheet: false,
+            showExpirationDateTimeSheet: false,
+            showOpenDateTimeSheet: false,
+            ACCOUNT_CATEGORY_SAVING,
         };
     },
     computed: {
-        ...mapStores(useSettingsStore, useAccountsStore),
+        ...mapStores(useSettingsStore, useAccountsStore, useUserStore),
         title() {
             if (!this.editAccountId) {
-                return 'Add Account';
+                return "Add Account";
             } else {
-                return 'Edit Account';
+                return "Edit Account";
             }
         },
         saveButtonTitle() {
             if (!this.editAccountId) {
-                return 'Add';
+                return "Add";
             } else {
-                return 'Save';
+                return "Save";
             }
         },
         allAccountTypes() {
@@ -497,17 +825,26 @@ export default {
         },
         allowedMaxAmount() {
             return transactionConstants.maxAmount;
-        }
+        },
     },
     watch: {
-        'account.category': function (newValue, oldValue) {
+        "account.balance": function (newValue, oldValue) {
+            if (
+                (oldValue !== 0 || this.currentBalance === 0) &&
+                this.currentBalance !== newValue &&
+                this.editAccountId
+            ) {
+                this.pushRouterToTransaction(newValue - oldValue);
+            }
+        },
+        "account.category": function (newValue, oldValue) {
             this.chooseSuitableIcon(oldValue, newValue);
         },
-        'account.type': function () {
+        "account.type": function () {
             if (this.subAccounts.length < 1) {
                 this.addSubAccount();
             }
-        }
+        },
     },
     created() {
         const self = this;
@@ -518,47 +855,58 @@ export default {
 
             self.editAccountId = query.id;
 
-            self.accountsStore.getAccount({
-                accountId: self.editAccountId
-            }).then(account => {
-                setAccountModelByAnotherAccount(self.account, account);
-                self.subAccounts = [];
+            self.accountsStore
+                .getAccount({
+                    accountId: self.editAccountId,
+                })
+                .then((account) => {
+                    setAccountModelByAnotherAccount(self.account, account);
+                    self.subAccounts = [];
 
-                if (account.subAccounts && account.subAccounts.length > 0) {
-                    for (let i = 0; i < account.subAccounts.length; i++) {
-                        const subAccount = self.accountsStore.generateNewSubAccountModel(self.account);
-                        setAccountModelByAnotherAccount(subAccount, account.subAccounts[i]);
-                        subAccount.showIconSelectionSheet = false;
-                        subAccount.showColorSelectionSheet = false;
-                        subAccount.showBalanceSheet = false;
+                    if (account.subAccounts && account.subAccounts.length > 0) {
+                        for (let i = 0; i < account.subAccounts.length; i++) {
+                            const subAccount =
+                                self.accountsStore.generateNewSubAccountModel(
+                                    self.account
+                                );
+                            setAccountModelByAnotherAccount(
+                                subAccount,
+                                account.subAccounts[i]
+                            );
+                            subAccount.showIconSelectionSheet = false;
+                            subAccount.showColorSelectionSheet = false;
+                            subAccount.showBalanceSheet = false;
 
-                        self.subAccounts.push(subAccount);
+                            self.subAccounts.push(subAccount);
+                        }
                     }
-                }
 
-                self.loading = false;
-            }).catch(error => {
-                if (error.processed) {
                     self.loading = false;
-                } else {
-                    self.loadingError = error;
-                    self.$toast(error.message || error);
-                }
-            });
+                })
+                .catch((error) => {
+                    if (error.processed) {
+                        self.loading = false;
+                    } else {
+                        self.loadingError = error;
+                        self.$toast(error.message || error);
+                    }
+                });
         } else {
             self.loading = false;
         }
     },
     methods: {
         onPageAfterIn() {
-            this.$routeBackOnError(this.f7router, 'loadingError');
+            this.$routeBackOnError(this.f7router, "loadingError");
         },
         addSubAccount() {
             if (this.account.type !== this.allAccountTypes.MultiSubAccounts) {
                 return;
             }
 
-            const subAccount = this.accountsStore.generateNewSubAccountModel(this.account);
+            const subAccount = this.accountsStore.generateNewSubAccountModel(
+                this.account
+            );
             subAccount.showIconSelectionSheet = false;
             subAccount.showColorSelectionSheet = false;
             subAccount.showBalanceSheet = false;
@@ -567,7 +915,7 @@ export default {
         },
         removeSubAccount(subAccount, confirm) {
             if (!subAccount) {
-                this.$alert('An error occurred');
+                this.$alert("An error occurred");
                 return;
             }
 
@@ -590,11 +938,20 @@ export default {
             const self = this;
             const router = self.f7router;
 
-            let problemMessage = self.getInputEmptyProblemMessage(self.account, false);
+            let problemMessage = self.getInputEmptyProblemMessage(
+                self.account,
+                false
+            );
 
-            if (!problemMessage && self.account.type === self.allAccountTypes.MultiSubAccounts) {
+            if (
+                !problemMessage &&
+                self.account.type === self.allAccountTypes.MultiSubAccounts
+            ) {
                 for (let i = 0; i < self.subAccounts.length; i++) {
-                    problemMessage = self.getInputEmptyProblemMessage(self.subAccounts[i], true);
+                    problemMessage = self.getInputEmptyProblemMessage(
+                        self.subAccounts[i],
+                        true
+                    );
 
                     if (problemMessage) {
                         break;
@@ -610,53 +967,72 @@ export default {
             self.submitting = true;
             self.$showLoading(() => self.submitting);
 
-            self.accountsStore.saveAccount({
-                account: self.account,
-                subAccounts: self.subAccounts,
-                isEdit: !!self.editAccountId
-            }).then(() => {
-                self.submitting = false;
-                self.$hideLoading();
+            self.accountsStore
+                .saveAccount({
+                    account: self.account,
+                    subAccounts: self.subAccounts,
+                    isEdit: !!self.editAccountId,
+                })
+                .then(() => {
+                    self.submitting = false;
+                    self.$hideLoading();
 
-                if (!self.editAccountId) {
-                    self.$toast('You have added a new account');
-                } else {
-                    self.$toast('You have saved this account');
-                }
+                    if (!self.editAccountId) {
+                        self.$toast("You have added a new account");
+                    } else {
+                        self.$toast("You have saved this account");
+                    }
 
-                router.back();
-            }).catch(error => {
-                self.submitting = false;
-                self.$hideLoading();
+                    router.back();
+                })
+                .catch((error) => {
+                    self.submitting = false;
+                    self.$hideLoading();
 
-                if (!error.processed) {
-                    self.$toast(error.message || error);
-                }
-            });
+                    if (!error.processed) {
+                        self.$toast(error.message || error);
+                    }
+                });
         },
         getCurrencyName(currencyCode) {
             return this.$locale.getCurrencyName(currencyCode);
         },
         getAccountTypeName(accountType) {
-            return getNameByKeyValue(this.allAccountTypesArray, accountType, 'id', 'displayName');
+            return getNameByKeyValue(
+                this.allAccountTypesArray,
+                accountType,
+                "id",
+                "displayName"
+            );
         },
         getAccountCategoryName(accountCategory) {
-            return getNameByKeyValue(this.allAccountCategories, accountCategory, 'id', 'displayName');
+            return getNameByKeyValue(
+                this.allAccountCategories,
+                accountCategory,
+                "id",
+                "displayName"
+            );
         },
         getAccountBalance(account) {
             return this.getDisplayCurrency(account.balance, account.currency);
         },
         getDisplayCurrency(value, currencyCode) {
             return this.$locale.getDisplayCurrency(value, currencyCode, {
-                currencyDisplayMode: this.settingsStore.appSettings.currencyDisplayMode,
-                enableThousandsSeparator: this.settingsStore.appSettings.thousandsSeparator
+                currencyDisplayMode:
+                    this.settingsStore.appSettings.currencyDisplayMode,
+                enableThousandsSeparator:
+                    this.settingsStore.appSettings.thousandsSeparator,
+                enableDecimalPoint: this.settingsStore.appSettings.decimalPoint,
             });
         },
         chooseSuitableIcon(oldCategory, newCategory) {
             setAccountSuitableIcon(this.account, oldCategory, newCategory);
         },
         isInputEmpty() {
-            const isAccountEmpty = !!this.getInputEmptyProblemMessage(this.account, false);
+            const isAccountEmpty = !!this.getInputEmptyProblemMessage(
+                this.account,
+                false
+            );
 
             if (isAccountEmpty) {
                 return true;
@@ -664,7 +1040,11 @@ export default {
 
             if (this.account.type === this.allAccountTypes.MultiSubAccounts) {
                 for (let i = 0; i < this.subAccounts.length; i++) {
-                    const isSubAccountEmpty = !!this.getInputEmptyProblemMessage(this.subAccounts[i], true);
+                    const isSubAccountEmpty =
+                        !!this.getInputEmptyProblemMessage(
+                            this.subAccounts[i],
+                            true
+                        );
 
                     if (isSubAccountEmpty) {
                         return true;
@@ -676,19 +1056,39 @@ export default {
         },
         getInputEmptyProblemMessage(account, isSubAccount) {
             if (!isSubAccount && !account.category) {
-                return 'Account category cannot be blank';
+                return "Account category cannot be blank";
             } else if (!isSubAccount && !account.type) {
-                return 'Account type cannot be blank';
+                return "Account type cannot be blank";
             } else if (!account.name) {
-                return 'Account name cannot be blank';
-            } else if (account.type === this.allAccountTypes.SingleAccount && !account.currency) {
-                return 'Account currency cannot be blank';
+                return "Account name cannot be blank";
+            } else if (
+                account.type === this.allAccountTypes.SingleAccount &&
+                !account.currency
+            ) {
+                return "Account currency cannot be blank";
             } else {
                 return null;
             }
-        }
-    }
-}
+        },
+        accountDisplayTime(date) {
+            return this.$locale.formatUnixTimeToLongDate(
+                this.userStore,
+                getActualUnixTimeForStore(
+                    date,
+                    getTimezoneOffsetMinutes(),
+                    getBrowserTimezoneOffsetMinutes()
+                )
+            );
+        },
+        pushRouterToTransaction(value) {
+            const type = value < 0 ? 3 : 2;
+            const amount = Math.abs(value);
+            this.f7router.navigate(
+                `/transaction/add?amount=${amount}&type=${type}&accountId=${this.editAccountId}`
+            );
+        },
+    },
+};
 </script>
 
 <style>

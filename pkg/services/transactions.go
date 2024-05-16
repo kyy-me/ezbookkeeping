@@ -7,12 +7,12 @@ import (
 
 	"xorm.io/xorm"
 
-	"github.com/mayswind/ezbookkeeping/pkg/core"
-	"github.com/mayswind/ezbookkeeping/pkg/datastore"
-	"github.com/mayswind/ezbookkeeping/pkg/errs"
-	"github.com/mayswind/ezbookkeeping/pkg/models"
-	"github.com/mayswind/ezbookkeeping/pkg/utils"
-	"github.com/mayswind/ezbookkeeping/pkg/uuid"
+	"github.com/hocx/ezbookkeeping/pkg/core"
+	"github.com/hocx/ezbookkeeping/pkg/datastore"
+	"github.com/hocx/ezbookkeeping/pkg/errs"
+	"github.com/hocx/ezbookkeeping/pkg/models"
+	"github.com/hocx/ezbookkeeping/pkg/utils"
+	"github.com/hocx/ezbookkeeping/pkg/uuid"
 )
 
 const pageCountForLoadTransactionAmounts = 1000

@@ -2,15 +2,15 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/mayswind/ezbookkeeping/pkg/errs"
-	"github.com/mayswind/ezbookkeeping/pkg/models"
+	"github.com/hocx/ezbookkeeping/pkg/errs"
+	"github.com/hocx/ezbookkeeping/pkg/models"
 	"os"
 
 	"github.com/urfave/cli/v2"
 
-	clis "github.com/mayswind/ezbookkeeping/pkg/cli"
-	"github.com/mayswind/ezbookkeeping/pkg/log"
-	"github.com/mayswind/ezbookkeeping/pkg/utils"
+	clis "github.com/hocx/ezbookkeeping/pkg/cli"
+	"github.com/hocx/ezbookkeeping/pkg/log"
+	"github.com/hocx/ezbookkeeping/pkg/utils"
 )
 
 // UserData represents the data command

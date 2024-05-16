@@ -1,0 +1,15 @@
+root = "."
+tmp_dir = ".air"
+
+[build]
+bin = "./.air/ezbookkeeping server run conf/ezbookkeeping.ini"
+cmd = "go build -o ./.air/ezbookkeeping ./ezbookkeeping.go"
+delay = 1000
+exclude_dir = [".air", "node_modules"]
+exclude_file = []
+exclude_regex = []
+exclude_unchanged = false
+follow_symlink = false
+full_bin = ""
+send_interrupt = true
+kill_delay = 2000

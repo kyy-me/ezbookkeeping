@@ -24,6 +24,11 @@ export function setTransactionModelByTransaction(transaction, transaction2, allC
         }
     }
 
+    if(options.amount) {
+        transaction.sourceAmount = options.amount;
+        transaction.destinationAmount = options.amount;
+    }
+
     if (allCategories[categoryConstants.allCategoryTypes.Expense] &&
         allCategories[categoryConstants.allCategoryTypes.Expense].length) {
         if (options.categoryId && options.categoryId !== '0') {

@@ -5,8 +5,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/mayswind/ezbookkeeping/pkg/models"
-	"github.com/mayswind/ezbookkeeping/pkg/utils"
+	"github.com/hocx/ezbookkeeping/pkg/models"
+	"github.com/hocx/ezbookkeeping/pkg/utils"
 )
 
 // EzBookKeepingPlainFileExporter defines the structure of plain file exporter

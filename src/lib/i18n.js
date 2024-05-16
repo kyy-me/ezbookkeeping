@@ -1,4 +1,6 @@
-import moment from 'moment-timezone';
+import dayjs from "dayjs";
+import timezonePlugin from "dayjs/plugin/timezone";
+import utcPlugin from "dayjs/plugin/utc";
 
 import { defaultLanguage, allLanguages } from '@/locales/index.js';
 import datetime from '@/consts/datetime.js';
@@ -46,6 +48,9 @@ import {
 
 import logger from './logger.js';
 import services from './services.js';
+
+dayjs.extend(utcPlugin);
+dayjs.extend(timezonePlugin);
 
 const apiNotFoundErrorCode = 100001;
 const specifiedApiNotFoundErrors = {
@@ -981,7 +986,7 @@ function getDisplayCurrency(value, currencyCode, options, translateFn) {
             value = value.substring(0, value.length - 1);
         }
 
-        value = numericCurrencyToString(value, options.enableThousandsSeparator);
+        value = numericCurrencyToString(value, options.enableThousandsSeparator, options.enableDecimalPoint);
 
         if (hasIncompleteFlag) {
             value = value + '+';
@@ -1193,7 +1198,7 @@ function setLanguage(i18nGlobal, locale, force) {
     logger.info(`Apply current language to ${locale}`);
 
     i18nGlobal.locale = locale;
-    moment.updateLocale(locale, {
+    dayjs.locale(locale, {
         months : getAllLongMonthNames(i18nGlobal.t),
         monthsShort : getAllShortMonthNames(i18nGlobal.t),
         weekdays : getAllLongWeekdayNames(i18nGlobal.t),
@@ -1226,9 +1231,9 @@ function setLanguage(i18nGlobal, locale, force) {
 
 function setTimeZone(timezone) {
     if (timezone) {
-        moment.tz.setDefault(timezone);
+        dayjs.tz.setDefault(timezone);
     } else {
-        moment.tz.setDefault();
+        dayjs.tz.setDefault();
     }
 }
 
@@ -1246,7 +1251,7 @@ function initLocale(i18nGlobal, lastUserLanguage, timezone) {
         logger.info(`Current timezone is ${timezone}`);
         setTimeZone(timezone);
     } else {
-        logger.info(`No timezone is set, use browser default ${getTimezoneOffset()} (maybe ${moment.tz.guess(true)})`);
+        logger.info(`No timezone is set, use browser default ${getTimezoneOffset()} (maybe ${dayjs.tz.guess(true)})`);
     }
 
     return localeDefaultSettings;

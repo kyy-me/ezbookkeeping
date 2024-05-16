@@ -33,8 +33,14 @@ const allAccountCategories = [
         id: 7,
         name: 'Investment Account',
         defaultAccountIconId: '800'
-    }
+    },
+    {
+        id: 8,
+        name: "Saving Account",
+        defaultAccountIconId: "30",
+    },
 ];
+
 const allAccountTypes = {
     SingleAccount: 1,
     MultiSubAccounts: 2
@@ -54,3 +60,12 @@ export default {
     allAccountTypes: allAccountTypes,
     allAccountTypesArray: allAccountTypesArray,
 };
+
+export const ACCOUNT_CATEGORY_CASH = 1;
+export const ACCOUNT_CATEGORY_DEBIT_CARD = 2;
+export const ACCOUNT_CATEGORY_CREDIT_CARD = 3;
+export const ACCOUNT_CATEGORY_VIRTUAL = 4;
+export const ACCOUNT_CATEGORY_DEBT = 5;
+export const ACCOUNT_CATEGORY_RECEIVABLES = 6;
+export const ACCOUNT_CATEGORY_INVESTMENT = 7;
+export const ACCOUNT_CATEGORY_SAVING = 8;

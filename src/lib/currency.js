@@ -1,6 +1,6 @@
 import { isNumber, appendThousandsSeparator } from './common.js';
 
-export function numericCurrencyToString(num, enableThousandsSeparator, trimTailZero) {
+export function numericCurrencyToString(num, enableThousandsSeparator, enableDecimalPoint, trimTailZero) {
     let str = num.toString();
     const negative = str.charAt(0) === '-';
 
@@ -30,7 +30,7 @@ export function numericCurrencyToString(num, enableThousandsSeparator, trimTailZ
 
     integer = appendThousandsSeparator(integer, enableThousandsSeparator);
 
-    if (decimals !== '') {
+    if (decimals !== "" && enableDecimalPoint) {
         str = `${integer}.${decimals}`;
     } else {
         str = integer;

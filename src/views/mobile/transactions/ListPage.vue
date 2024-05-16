@@ -137,10 +137,10 @@
                                         <span>{{ getDisplayYearMonth(transactionMonthList) }}</span>
                                     </small>
                                     <small class="transaction-amount-statistics" v-if="showTotalAmountInTransactionListPage && transactionMonthList.totalAmount">
-                                        <span class="text-color-red">
+                                        <span class="text-color-teal">
                                             {{ getDisplayMonthTotalAmount(transactionMonthList.totalAmount.income, defaultCurrency, '+', transactionMonthList.totalAmount.incompleteIncome) }}
                                         </span>
-                                        <span class="text-color-teal">
+                                        <span class="text-color-red">
                                             {{ getDisplayMonthTotalAmount(transactionMonthList.totalAmount.expense, defaultCurrency, '-', transactionMonthList.totalAmount.incompleteExpense) }}
                                         </span>
                                     </small>
@@ -199,7 +199,7 @@
                                             </div>
                                             <div class="item-after">
                                                 <div class="transaction-amount" v-if="transaction.sourceAccount"
-                                                     :class="{ 'text-color-teal': transaction.type === allTransactionTypes.Expense, 'text-color-red': transaction.type === allTransactionTypes.Income }">
+                                                     :class="{ 'text-color-red': transaction.type === allTransactionTypes.Expense, 'text-color-teal': transaction.type === allTransactionTypes.Income }">
                                                     <span v-if="!query.accountId || query.accountId === '0' || (transaction.sourceAccount && (transaction.sourceAccount.id === query.accountId || transaction.sourceAccount.parentId === query.accountId))">{{ getDisplayAmount(transaction.sourceAmount, transaction.sourceAccount.currency, transaction.hideAmount) }}</span>
                                                     <span v-else-if="query.accountId && query.accountId !== '0' && transaction.destinationAccount && (transaction.destinationAccount.id === query.accountId || transaction.destinationAccount.parentId === query.accountId)">{{ getDisplayAmount(transaction.destinationAmount, transaction.destinationAccount.currency, transaction.hideAmount) }}</span>
                                                     <span v-else></span>
@@ -861,7 +861,8 @@ export default {
         getDisplayCurrency(value, currencyCode) {
             return this.$locale.getDisplayCurrency(value, currencyCode, {
                 currencyDisplayMode: this.settingsStore.appSettings.currencyDisplayMode,
-                enableThousandsSeparator: this.settingsStore.appSettings.thousandsSeparator
+                enableThousandsSeparator: this.settingsStore.appSettings.thousandsSeparator,
+                enableDecimalPoint: this.settingsStore.appSettings.decimalPoint,
             });
         },
         getWeekdayShortName(transaction) {

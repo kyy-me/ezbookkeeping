@@ -493,7 +493,8 @@ export default {
         categorizedAccounts() {
             return this.$locale.getCategorizedAccountsWithDisplayBalance(this.exchangeRatesStore, this.allVisibleAccounts, this.showAccountBalance, this.defaultCurrency, {
                 currencyDisplayMode: this.settingsStore.appSettings.currencyDisplayMode,
-                enableThousandsSeparator: this.settingsStore.appSettings.thousandsSeparator
+                enableThousandsSeparator: this.settingsStore.appSettings.thousandsSeparator,
+                enableDecimalPoint: this.settingsStore.appSettings.decimalPoint,
             });
         },
         allCategories() {
@@ -562,8 +563,8 @@ export default {
         sourceAmountClass() {
             const classes = {
                 'readonly': this.mode === 'view',
-                'text-color-teal': this.transaction.type === this.allTransactionTypes.Expense,
-                'text-color-red': this.transaction.type === this.allTransactionTypes.Income,
+                'text-color-red': this.transaction.type === this.allTransactionTypes.Expense,
+                'text-color-teal': this.transaction.type === this.allTransactionTypes.Income,
                 'text-color-primary': this.transaction.type === this.allTransactionTypes.Transfer
             };
 
@@ -684,7 +685,8 @@ export default {
                 {
                     type: query.type,
                     categoryId: query.categoryId,
-                    accountId: query.accountId
+                    accountId: query.accountId,
+                    amount: query.amount
                 },
                 (self.mode === 'edit' || self.mode === 'view'),
                 (self.mode === 'edit' || self.mode === 'view')
@@ -833,7 +835,8 @@ export default {
         getDisplayCurrency(value, currencyCode) {
             return this.$locale.getDisplayCurrency(value, currencyCode, {
                 currencyDisplayMode: this.settingsStore.appSettings.currencyDisplayMode,
-                enableThousandsSeparator: this.settingsStore.appSettings.thousandsSeparator
+                enableThousandsSeparator: this.settingsStore.appSettings.thousandsSeparator,
+                enableDecimalPoint: this.settingsStore.appSettings.decimalPoint,
             });
         },
         getPrimaryCategoryName(categoryId, allCategories) {
