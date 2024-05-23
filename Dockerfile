@@ -19,7 +19,7 @@ RUN apk add git
 RUN ./build.sh frontend --no-lint --no-test
 
 # Package docker image
-FROM alpine:3.19.1
+FROM alpine:3.20.0
 LABEL maintainer="MaysWind <i@mayswind.net>"
 RUN addgroup -S -g 1000 ezbookkeeping && adduser -S -G ezbookkeeping -u 1000 ezbookkeeping
 RUN apk --no-cache add tzdata
