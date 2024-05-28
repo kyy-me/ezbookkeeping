@@ -43,7 +43,7 @@
     "register-service-worker": "^1.7.2",
     "skeleton-elements": "^4.0.1",
     "swiper": "^11.1.3",
-    "ua-parser-js": "^1.0.37",
+    "ua-parser-js": "^1.0.38",
     "vue": "^3.4.27",
     "vue-echarts": "^6.7.2",
     "vue-i18n": "^9.13.1",
