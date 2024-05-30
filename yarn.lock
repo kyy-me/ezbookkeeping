@@ -3887,7 +3887,7 @@ __metadata:
     register-service-worker: "npm:^1.7.2"
     sass: "npm:^1.77.3"
     skeleton-elements: "npm:^4.0.1"
-    swiper: "npm:^11.1.3"
+    swiper: "npm:^11.1.4"
     ua-parser-js: "npm:^1.0.38"
     vite: "npm:^5.2.12"
     vite-plugin-pwa: "npm:^0.20.0"
@@ -6703,10 +6703,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"swiper@npm:^11.1.3":
-  version: 11.1.3
-  resolution: "swiper@npm:11.1.3"
-  checksum: 10/f8e9e0dfaea4d94b6d8810892d62fab8d76ef07619ba5fb8c10b086edc0578969182ed19bf8276a9ecbe97332545d22f3c9c44d30545a61366a7a089a3e5a752
+"swiper@npm:^11.1.4":
+  version: 11.1.4
+  resolution: "swiper@npm:11.1.4"
+  checksum: 10/c4ecf10dc447921ec8c58a8f9a2b76f1ca6dddbc81aff1caafb8c8504460c9e934a9f709113a757ca91dd0305d2e25337fc512206813ea333492415d7a144757
   languageName: node
   linkType: hard
 
