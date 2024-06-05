@@ -3893,7 +3893,7 @@ __metadata:
     vite-plugin-pwa: "npm:^0.20.0"
     vite-plugin-vuetify: "npm:^2.0.3"
     vue: "npm:^3.4.27"
-    vue-echarts: "npm:^6.7.2"
+    vue-echarts: "npm:^6.7.3"
     vue-i18n: "npm:^9.13.1"
     vue-router: "npm:^4.3.2"
     vue3-perfect-scrollbar: "npm:^2.0.0"
@@ -7121,9 +7121,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-echarts@npm:^6.7.2":
-  version: 6.7.2
-  resolution: "vue-echarts@npm:6.7.2"
+"vue-echarts@npm:^6.7.3":
+  version: 6.7.3
+  resolution: "vue-echarts@npm:6.7.3"
   dependencies:
     resize-detector: "npm:^0.3.0"
     vue-demi: "npm:^0.13.11"
@@ -7137,7 +7137,7 @@ __metadata:
       optional: true
     "@vue/runtime-core":
       optional: true
-  checksum: 10/79f9d6cb54daf2c1971287a6ce845cdcd18cf47be3795c84ca9c16b9c5b189fcaad4a347dc32ddd6cd869e22ad43da7c3b3a6b8ce57727ff83b0e4d182bdde57
+  checksum: 10/82f6c06242670f30de7241820dfd4d6e433e17f81b2f2cadc320d4fee6fc995fb90c7224cac21b6a42cc18dcbab8dce33b744bcb4d7e0b81b8ca8a8acce1f92a
   languageName: node
   linkType: hard
 
