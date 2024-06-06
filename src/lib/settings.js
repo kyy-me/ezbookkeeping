@@ -31,7 +31,9 @@ const defaultSettings = {
         defaultTrendChartType: statisticsConstants.defaultTrendChartType,
         defaultTrendChartDataRangeType: statisticsConstants.defaultTrendChartDataRangeType,
     },
-    animate: true
+    animate: true,
+    decimalPoint: false,
+    autocompleteThousand: true,
 };
 
 function getOriginalSettings() {
@@ -301,6 +303,24 @@ export function isEnableAnimate() {
 
 export function setEnableAnimate(value) {
     return setOption('animate', value);
+}
+
+
+export function isEnableDecimalPoint() {
+    return getOption("decimalPoint");
+}
+
+export function setEnableDecimalPoint(value) {
+    return setOption("decimalPoint", value);
+}
+
+
+export function isEnableAutocompleteThousand() {
+    return getOption("autocompleteThousand");
+}
+
+export function setEnableAutocompleteThousand(value) {
+    return setOption("autocompleteThousand", value);
 }
 
 export function clearSettings() {

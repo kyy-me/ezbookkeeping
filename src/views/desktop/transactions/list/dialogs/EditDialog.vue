@@ -477,7 +477,8 @@ export default {
         categorizedAccounts() {
             return this.$locale.getCategorizedAccountsWithDisplayBalance(this.exchangeRatesStore, this.allVisibleAccounts, this.showAccountBalance, this.defaultCurrency, {
                 currencyDisplayMode: this.settingsStore.appSettings.currencyDisplayMode,
-                enableThousandsSeparator: this.settingsStore.appSettings.thousandsSeparator
+                enableThousandsSeparator: this.settingsStore.appSettings.thousandsSeparator,
+                enableDecimalPoint: this.settingsStore.appSettings.decimalPoint,
             });
         },
         allAccountsMap() {

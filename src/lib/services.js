@@ -1,4 +1,5 @@
-import axios from 'axios';
+import Axios from 'axios';
+import { buildWebStorage, setupCache } from 'axios-cache-interceptor';
 
 import api from '@/consts/api.js';
 import userState from './userstate.js';
@@ -12,6 +13,15 @@ import { getTimezoneOffsetMinutes } from './datetime.js';
 let needBlockRequest = false;
 let blockedRequests = [];
 
+const instance = Axios.create(); 
+const axios = setupCache(instance,
+    {  
+        storage: buildWebStorage(localStorage, 'axios-cache:'),
+        methods: ['get', 'patch', 'head', 'options'],
+    }
+);
+
+axios.defaults.cache.ttl = 1000 * 60 * 60 * 24; // 1 day
 axios.defaults.baseURL = api.baseApiUrlPath;
 axios.defaults.timeout = api.defaultTimeout;
 axios.interceptors.request.use(config => {
@@ -62,6 +72,15 @@ axios.interceptors.response.use(response => {
 
     return Promise.reject(error);
 });
+
+const clearAxiosCache = () => {
+    const keys = Object.keys(localStorage);
+    const axiosCacheKeys = keys.filter((key) => key.startsWith("axios-cache"));
+    axiosCacheKeys.forEach((key) => {
+    localStorage.removeItem(key);
+    });
+    return axiosCacheKeys.length;
+}
 
 export default {
     setLocale: locale => {
@@ -138,7 +157,7 @@ export default {
         return new Promise((resolve) => {
             needBlockRequest = true;
 
-            axios.post('v1/tokens/refresh.json', {}, {
+            axios.post('v1/tokens/refresh.json', {cache: true}, {
                 ignoreBlocked: true
             }).then(response => {
                 const data = response.data;
@@ -234,30 +253,34 @@ export default {
     getAccount: ({ id }) => {
         return axios.get('v1/accounts/get.json?id=' + id);
     },
-    addAccount: ({ category, type, name, icon, color, currency, balance, comment, subAccounts }) => {
-        return axios.post('v1/accounts/add.json', {
+    addAccount: ({ category, type, openDate, expirationDate, name, icon, color, currency, balance, comment, subAccounts }) => {
+        return axios.post("v1/accounts/add.json", {
             category,
             type,
+            openDate,
+            expirationDate,
             name,
             icon,
             color,
             currency,
             balance,
             comment,
-            subAccounts
+            subAccounts,
         });
-    },
-    modifyAccount: ({ id, category, name, icon, color, comment, hidden, subAccounts }) => {
-        return axios.post('v1/accounts/modify.json', {
+      },
+    modifyAccount: ({ id, category, openDate, expirationDate, name, icon, color, comment, hidden, subAccounts }) => {
+        return axios.post("v1/accounts/modify.json", {
             id,
             category,
+            openDate,
+            expirationDate,
             name,
             icon,
             color,
             comment,
             hidden,
-            subAccounts
-        });
+            subAccounts,
+            });
     },
     hideAccount: ({ id, hidden }) => {
         return axios.post('v1/accounts/hide.json', {
@@ -378,6 +401,7 @@ export default {
         return axios.get(`v1/transactions/get.json?id=${id}&trim_account=true&trim_category=true&trim_tag=true`);
     },
     addTransaction: ({ type, categoryId, time, sourceAccountId, destinationAccountId, sourceAmount, destinationAmount, hideAmount, tagIds, comment, geoLocation, utcOffset }) => {
+        clearAxiosCache();
         return axios.post('v1/transactions/add.json', {
             type,
             categoryId,
@@ -394,6 +418,7 @@ export default {
         });
     },
     modifyTransaction: ({ id, type, categoryId, time, sourceAccountId, destinationAccountId, sourceAmount, destinationAmount, hideAmount, tagIds, comment, geoLocation, utcOffset }) => {
+        clearAxiosCache();
         return axios.post('v1/transactions/modify.json', {
             id,
             type,
@@ -530,5 +555,18 @@ export default {
     },
     generateAmapApiInternalProxyUrl: () => {
         return `${window.location.origin}${api.baseAmapApiProxyUrlPath}`;
-    }
+    },
+    clearAxiosCache,
+    getCacheSize: () => {
+        var total = 0;
+        const keys = Object.keys(localStorage);
+        const axiosCacheKeys = keys.filter((key) => key.startsWith("axios-cache"));
+        axiosCacheKeys.forEach((x) => {
+        var amount = (localStorage[x].length * 4) / 1024 / 1024;
+        if (!isNaN(amount) && Object.prototype.hasOwnProperty.call(localStorage, x)) {
+            total += amount;
+        }
+        });
+        return total.toFixed(2);
+    },
 };

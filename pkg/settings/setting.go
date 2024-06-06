@@ -10,7 +10,7 @@ import (
 
 	"gopkg.in/ini.v1"
 
-	"github.com/mayswind/ezbookkeeping/pkg/errs"
+	"github.com/hocx/ezbookkeeping/pkg/errs"
 )
 
 const (

@@ -3,7 +3,7 @@ package converters
 import (
 	"time"
 
-	"github.com/mayswind/ezbookkeeping/pkg/models"
+	"github.com/hocx/ezbookkeeping/pkg/models"
 )
 
 // EzBookKeepingTSVFileExporter defines the structure of TSV file exporter

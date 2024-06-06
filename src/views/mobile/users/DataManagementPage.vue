@@ -7,6 +7,8 @@
             <f7-list-item title="Transaction Categories" after="Count"></f7-list-item>
             <f7-list-item title="Transaction Tags" after="Count"></f7-list-item>
             <f7-list-item title="Transactions" after="Count"></f7-list-item>
+            <f7-list-item title="Cache" after="0.00 kb"></f7-list-item>
+            <f7-list-button @click="clearCache">{{ $t("Clear Cache") }}</f7-list-button>
         </f7-list>
 
         <f7-list strong inset dividers class="margin-vertical" v-else-if="!loading">
@@ -14,6 +16,8 @@
             <f7-list-item :title="$t('Transaction Categories')" :after="displayDataStatistics.totalTransactionCategoryCount"></f7-list-item>
             <f7-list-item :title="$t('Transaction Tags')" :after="displayDataStatistics.totalTransactionTagCount"></f7-list-item>
             <f7-list-item :title="$t('Transactions')" :after="displayDataStatistics.totalTransactionCount"></f7-list-item>
+            <f7-list-item :title="$t('Cache')" :after="cacheSize"></f7-list-item>
+            <f7-list-button f7-list-button @click="clearCache">{{ $t("Clear Cache") }}</f7-list-button>
         </f7-list>
 
         <f7-list strong inset dividers class="margin-vertical" :class="{ 'disabled': loading }">
@@ -75,6 +79,7 @@ import { useUserStore } from '@/stores/user.js';
 
 import { appendThousandsSeparator } from '@/lib/common.js';
 import { isDataExportingEnabled } from '@/lib/server_settings.js';
+import services from "@/lib/services.js";
 
 export default {
     props: [
@@ -92,6 +97,7 @@ export default {
             clearingData: false,
             showExportDataSheet: false,
             showInputPasswordSheetForClearData: false,
+            cacheSize: "0.00 kb",
         };
     },
     computed: {
@@ -132,6 +138,7 @@ export default {
         const self = this;
 
         self.loading = true;
+        self.cacheSize = services.getCacheSize() + " kb";
 
         self.userStore.getUserDataStatistics().then(dataStatistics => {
             self.dataStatistics = dataStatistics;
@@ -146,6 +153,13 @@ export default {
         });
     },
     methods: {
+        clearCache() {
+        const cached = services.clearAxiosCache();
+            if (!isNaN(cached)) {
+                this.cacheSize = "0.00 kb";
+                this.$toast("The cache has been successfully cleared.");
+            }
+        },
         onPageAfterIn() {
             this.$routeBackOnError(this.f7router, 'loadingError');
         },

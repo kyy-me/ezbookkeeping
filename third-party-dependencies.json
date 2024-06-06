@@ -207,18 +207,6 @@
         "licenseUrl": "https://github.com/axios/axios/blob/v1.6.8/LICENSE"
     },
     {
-        "name": "Moment.js",
-        "copyright": "Copyright (c) JS Foundation and other contributors",
-        "url": "https://momentjs.com",
-        "licenseUrl": "https://github.com/moment/moment/blob/2.30.1/LICENSE"
-    },
-    {
-        "name": "Moment Timezone",
-        "copyright": "Copyright (c) JS Foundation and other contributors",
-        "url": "https://momentjs.com",
-        "licenseUrl": "https://github.com/moment/moment-timezone/blob/0.5.45/LICENSE"
-    },
-    {
         "name": "Leaflet",
         "copyright": "Copyright (c) 2010-2023, Volodymyr Agafonkin, Copyright (c) 2010-2011, CloudMade, All rights reserved.",
         "url": "https://leafletjs.com/",

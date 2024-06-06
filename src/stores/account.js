@@ -11,6 +11,7 @@ import services from '@/lib/services.js';
 import logger from '@/lib/logger.js';
 import { isNumber, isEquals } from '@/lib/common.js';
 import { getCategorizedAccounts, getAllFilteredAccountsBalance } from '@/lib/account.js';
+import { getCurrentUnixTime, getUnixTimeAddYears } from '../lib/datetime.js';
 
 function loadAccountList(state, accounts) {
     state.allAccounts = accounts;
@@ -254,20 +255,23 @@ export const useAccountsStore = defineStore('accounts', {
     actions: {
         generateNewAccountModel() {
             const userStore = useUserStore();
-
+            const now = getCurrentUnixTime();
+            const after1years = getUnixTimeAddYears(now, 1);
+      
             return {
-                category: 1,
-                type: accountConstants.allAccountTypes.SingleAccount,
-                name: '',
-                icon: iconConstants.defaultAccountIconId,
-                color: colorConstants.defaultAccountColor,
-                currency: userStore.currentUserDefaultCurrency,
-                balance: 0,
-                comment: '',
-                visible: true
+              category: 1,
+              type: accountConstants.allAccountTypes.SingleAccount,
+              name: "",
+              icon: iconConstants.defaultAccountIconId,
+              color: colorConstants.defaultAccountColor,
+              currency: userStore.currentUserDefaultCurrency,
+              balance: 0,
+              openDate: now,
+              expirationDate: after1years,
+              comment: "",
+              visible: true,
             };
-        },
-        generateNewSubAccountModel(parentAccount) {
+          },        generateNewSubAccountModel(parentAccount) {
             const userStore = useUserStore();
 
             return {
@@ -767,15 +771,20 @@ export const useAccountsStore = defineStore('accounts', {
             const submitAccount = {
                 category: account.category,
                 type: account.type,
+                openDate: account.openDate,
+                expirationDate: account.expirationDate,
                 name: account.name,
                 icon: account.icon,
                 color: account.color,
-                currency: account.type === accountConstants.allAccountTypes.SingleAccount ? account.currency : currencyConstants.parentAccountCurrencyPlaceholder,
+                currency:
+                  account.type === accountConstants.allAccountTypes.SingleAccount
+                    ? account.currency
+                    : currencyConstants.parentAccountCurrencyPlaceholder,
                 balance: account.type === accountConstants.allAccountTypes.SingleAccount ? account.balance : 0,
                 comment: account.comment,
                 subAccounts: account.type === accountConstants.allAccountTypes.SingleAccount ? null : submitSubAccounts,
-            };
-
+              };
+        
             if (isEdit) {
                 submitAccount.id = account.id;
                 submitAccount.hidden = !account.visible;

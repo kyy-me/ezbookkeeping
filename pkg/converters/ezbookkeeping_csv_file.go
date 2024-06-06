@@ -3,7 +3,7 @@ package converters
 import (
 	"time"
 
-	"github.com/mayswind/ezbookkeeping/pkg/models"
+	"github.com/hocx/ezbookkeeping/pkg/models"
 )
 
 // EzBookKeepingCSVFileExporter defines the structure of CSV file exporter

@@ -1,0 +1,25 @@
+name: Pull Request
+
+on:
+    pull_request:
+
+jobs:
+    vue3:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: oven-sh/setup-bun@v1
+            - run: ./build.sh frontend  --no-build
+    golang:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - run: ./build.sh backend  --no-build
+    auto-merge:
+        permissions:
+            pull-requests: write
+            contents: write
+        needs: [vue3, golang]
+        runs-on: ubuntu-latest
+        steps:
+            - uses: fastify/github-action-merge-dependabot@v3

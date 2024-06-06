@@ -108,8 +108,12 @@
                             </ItemIcon>
                             <div class="nested-list-item-title">
                                 <span>{{ account.name }}</span>
-                                <div class="item-footer" v-if="account.comment">{{ account.comment }}</div>
-                            </div>
+                                <div class="item-footer" v-if="account.comment && account.category !== ACCOUNT_CATEGORY_SAVING">
+                                    {{ account.comment }}
+                                </div>
+                                <div class="item-footer" v-if="account.expirationDate && account.category === ACCOUNT_CATEGORY_SAVING">
+                                    {{ daysUntilExpiration(account.expirationDate) }} {{ $t("days left") }}
+                                </div>                            </div>
                         </div>
                         <li v-if="account.type === allAccountTypes.MultiSubAccounts">
                             <ul class="no-padding">
@@ -178,8 +182,13 @@ import { useSettingsStore } from '@/stores/setting.js';
 import { useUserStore } from '@/stores/user.js';
 import { useAccountsStore } from '@/stores/account.js';
 import { useExchangeRatesStore } from '@/stores/exchangeRates.js';
-
-import accountConstants from '@/consts/account.js';
+import {
+  getTimezoneOffsetMinutes,
+  getBrowserTimezoneOffsetMinutes,
+  getActualUnixTimeForStore,
+  daysCurrentUntilDate,
+} from "@/lib/datetime.js";
+import accountConstants, {ACCOUNT_CATEGORY_SAVING} from '@/consts/account.js';
 import { onSwipeoutDeleted } from '@/lib/ui.mobile.js';
 
 export default {
@@ -196,7 +205,8 @@ export default {
             showMoreActionSheet: false,
             showDeleteActionSheet: false,
             displayOrderModified: false,
-            displayOrderSaving: false
+            displayOrderSaving: false,
+            ACCOUNT_CATEGORY_SAVING
         };
     },
     computed: {
@@ -440,7 +450,8 @@ export default {
         getDisplayCurrency(value, currencyCode) {
             return this.$locale.getDisplayCurrency(value, currencyCode, {
                 currencyDisplayMode: this.settingsStore.appSettings.currencyDisplayMode,
-                enableThousandsSeparator: this.settingsStore.appSettings.thousandsSeparator
+                enableThousandsSeparator: this.settingsStore.appSettings.thousandsSeparator,
+                enableDecimalPoint: this.settingsStore.appSettings.decimalPoint,
             });
         },
         getAccountDomId(account) {
@@ -452,7 +463,12 @@ export default {
             }
 
             return domId.substring(8); // account_
-        }
+        },
+        daysUntilExpiration(expirationDate) {
+            return daysCurrentUntilDate(
+                getActualUnixTimeForStore(expirationDate, getTimezoneOffsetMinutes(), getBrowserTimezoneOffsetMinutes()),
+            );
+        },
     }
 };
 </script>

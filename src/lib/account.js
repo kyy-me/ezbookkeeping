@@ -11,6 +11,8 @@ export function setAccountModelByAnotherAccount(account, account2) {
     account.balance = account2.balance;
     account.comment = account2.comment;
     account.visible = !account2.hidden;
+    account.expirationDate = account2.expirationDate;
+    account.openDate = account2.openDate;
 }
 
 export function getAccountCategoryInfo(categoryId) {

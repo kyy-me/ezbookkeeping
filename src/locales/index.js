@@ -1,9 +1,16 @@
 import en from './en.js'
+import vi from './vi.js';
 import zhHans from './zh_Hans.js'
 
 export const defaultLanguage = 'en';
 
 export const allLanguages = {
+    'vi': {
+        name: 'Vietnamese',
+        displayName: 'Tiếng Việt',
+        code: 'vi',
+        content: vi
+    },
     'en': {
         name: 'English',
         displayName: 'English',

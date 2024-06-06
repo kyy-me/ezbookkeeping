@@ -3,6 +3,7 @@
 TYPE=""
 NO_LINT="0"
 NO_TEST="0"
+NO_BUILD="0"
 RELEASE=${RELEASE_BUILD:-"0"}
 RELEASE_TYPE="unknown"
 VERSION=""
@@ -27,7 +28,7 @@ check_dependency() {
 
 show_help() {
     cat <<-EOF
-ezBookkeeping build script
+FIRE build script
 
 Usage:
     build.sh type [options]
@@ -73,6 +74,9 @@ parse_args() {
             --no-test)
                 NO_TEST="1"
                 ;;
+            --no-build)
+                NO_BUILD="1"
+                ;;
             --help | -h)
                 show_help
                 exit 0
@@ -106,9 +110,9 @@ check_type_dependencies() {
     if [ "$TYPE" = "backend" ]; then
         check_dependency "go gcc"
     elif [ "$TYPE" = "frontend" ]; then
-        check_dependency "node npm"
+        check_dependency "yarn"
     elif [ "$TYPE" = "package" ]; then
-        check_dependency "go gcc node npm tar"
+        check_dependency "go gcc yarn tar"
     elif [ "$TYPE" = "docker" ]; then
         check_dependency "docker"
     fi
@@ -145,26 +149,28 @@ build_backend() {
         fi
     fi
 
-    backend_build_extra_arguments="-X main.Version=$VERSION"
-    backend_build_extra_arguments="$backend_build_extra_arguments -X main.CommitHash=$COMMIT_HASH"
+    if [ "$NO_BUILD" = "0" ]; then
+        backend_build_extra_arguments="-X main.Version=$VERSION"
+        backend_build_extra_arguments="$backend_build_extra_arguments -X main.CommitHash=$COMMIT_HASH"
 
-    if [ "$RELEASE" = "0" ]; then
-        backend_build_extra_arguments="$backend_build_extra_arguments -X main.BuildUnixTime=$BUILD_UNIXTIME"
+        if [ "$RELEASE" = "0" ]; then
+            backend_build_extra_arguments="$backend_build_extra_arguments -X main.BuildUnixTime=$BUILD_UNIXTIME"
+        fi
+
+        echo "Building backend binary file ($RELEASE_TYPE)..."
+
+        CGO_ENABLED=1 go build -a -v -trimpath -ldflags "-w -s -linkmode external -extldflags '-static' $backend_build_extra_arguments" -o ezbookkeeping ezbookkeeping.go
+        chmod +x ezbookkeeping
     fi
-
-    echo "Building backend binary file ($RELEASE_TYPE)..."
-
-    CGO_ENABLED=1 go build -a -v -trimpath -ldflags "-w -s -linkmode external -extldflags '-static' $backend_build_extra_arguments" -o ezbookkeeping ezbookkeeping.go
-    chmod +x ezbookkeeping
 }
 
 build_frontend() {
     echo "Pulling frontend dependencies..."
-    npm install
+    yarn install
 
     if [ "$NO_LINT" = "0" ]; then
         echo "Executing frontend lint checking..."
-        npm run lint
+        yarn run lint
 
         if [ "$?" != "0" ]; then
             echo_red "Error: Failed to pass lint checking"
@@ -172,12 +178,14 @@ build_frontend() {
         fi
     fi
 
-    echo "Building frontend files ($RELEASE_TYPE)..."
+    if [ "$NO_BUILD" = "0" ]; then
+        echo "Building frontend files ($RELEASE_TYPE)..."
 
-    if [ "$RELEASE" = "0" ]; then
-        buildUnixTime=$BUILD_UNIXTIME npm run build
-    else
-        npm run build
+        if [ "$RELEASE" = "0" ]; then
+            buildUnixTime=$BUILD_UNIXTIME npm run build
+        else
+        yarn run build
+        fi
     fi
 }
 

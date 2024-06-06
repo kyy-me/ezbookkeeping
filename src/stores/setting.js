@@ -32,7 +32,9 @@ export const useSettingsStore = defineStore('settings', {
                 defaultTrendChartType: settings.getStatisticsDefaultTrendChartType(),
                 defaultTrendChartDataRangeType: settings.getStatisticsDefaultTrendChartDataRange(),
             },
-            animate: settings.isEnableAnimate()
+            animate: settings.isEnableAnimate(),
+            decimalPoint: settings.isEnableDecimalPoint(),
+            autocompleteThousand: settings.isEnableAutocompleteThousand(),
         },
         localeDefaultSettings: {
             currency: currencyConstants.defaultCurrency,
@@ -135,6 +137,14 @@ export const useSettingsStore = defineStore('settings', {
         setEnableAnimate(value) {
             settings.setEnableAnimate(value);
             this.appSettings.animate = value;
+        },
+        setEnableDecimalPoint(value) {
+            settings.setEnableDecimalPoint(value);
+            this.appSettings.decimalPoint = value;
+        },
+        setEnableAutocompleteThousand(value) {
+            settings.setEnableAutocompleteThousand(value);
+            this.appSettings.autocompleteThousand = value;
         },
         clearAppSettings() {
             settings.clearSettings();

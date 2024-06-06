@@ -18,6 +18,7 @@ import StatisticsCategoryFilterSettingsPage from '@/views/mobile/statistics/Cate
 
 import TextSizeSettingsPage from '@/views/mobile/settings/TextSizeSettingsPage.vue';
 import PageSettingsPage from '@/views/mobile/settings/PageSettingsPage.vue';
+import CurrencySettings from '@/views/mobile/settings/CurrencySettings.vue';
 
 import SettingsPage from '@/views/mobile/SettingsPage.vue';
 import ApplicationLockPage from '@/views/mobile/ApplicationLockPage.vue';
@@ -206,6 +207,11 @@ const routes = [
     {
         path: '/settings/page',
         async: asyncResolve(PageSettingsPage),
+        beforeEnter: [checkLogin]
+    },
+    {
+        path: '/settings/currency',
+        async: asyncResolve(CurrencySettings),
         beforeEnter: [checkLogin]
     },
     {

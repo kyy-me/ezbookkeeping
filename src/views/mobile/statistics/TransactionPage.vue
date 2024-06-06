@@ -28,7 +28,7 @@
             </f7-list>
         </f7-popover>
 
-        <f7-card v-if="query.categoricalChartType === allCategoricalChartTypes.Pie">
+        <f7-card v-if="query.chartType === allChartTypes.Pie">
             <f7-card-header class="no-border display-block">
                 <div class="statistics-chart-header full-line text-align-right">
                     <span style="margin-right: 4px;">{{ $t('Sort by') }}</span>
@@ -48,7 +48,7 @@
                     v-if="loading"
                 ></pie-chart>
                 <pie-chart
-                    :items="categoricalAnalysisData.items"
+                    :items="statisticsData.items"
                     :min-valid-percent="0.0001"
                     :show-value="showAmountInChart"
                     :show-center-text="true"
@@ -64,20 +64,20 @@
                     v-else-if="!loading"
                     @click="clickPieChartItem"
                 >
-                    <text class="statistics-pie-chart-total-amount-title" v-if="categoricalAnalysisData.items && categoricalAnalysisData.items.length">
+                    <text class="statistics-pie-chart-total-amount-title" v-if="statisticsData.items && statisticsData.items.length">
                         {{ totalAmountName }}
                     </text>
-                    <text class="statistics-pie-chart-total-amount-value" v-if="categoricalAnalysisData.items && categoricalAnalysisData.items.length">
-                        {{ getDisplayAmount(categoricalAnalysisData.totalAmount, defaultCurrency, 16) }}
+                    <text class="statistics-pie-chart-total-amount-value" v-if="statisticsData.items && statisticsData.items.length">
+                        {{ getDisplayAmount(statisticsData.totalAmount, defaultCurrency, 16) }}
                     </text>
-                    <text class="statistics-pie-chart-total-no-data" cy="50%" v-if="!categoricalAnalysisData.items || !categoricalAnalysisData.items.length">
+                    <text class="statistics-pie-chart-total-no-data" cy="50%" v-if="!statisticsData.items || !statisticsData.items.length">
                         {{ $t('No data') }}
                     </text>
                 </pie-chart>
             </f7-card-content>
         </f7-card>
 
-        <f7-card v-else-if="query.categoricalChartType === allCategoricalChartTypes.Bar">
+        <f7-card v-else-if="query.chartType === allChartTypes.Bar">
             <f7-card-header class="no-border display-block">
                 <div class="statistics-chart-header display-flex full-line justify-content-space-between">
                     <div>
@@ -89,11 +89,11 @@
                     </div>
                 </div>
                 <div class="display-flex full-line">
-                    <div :class="{ 'statistics-list-item-overview-amount': true, 'text-color-teal': query.chartDataType === allChartDataTypes.ExpenseByAccount.type || query.chartDataType === allChartDataTypes.ExpenseByPrimaryCategory.type || query.chartDataType === allChartDataTypes.ExpenseBySecondaryCategory.type, 'text-color-red': query.chartDataType === allChartDataTypes.IncomeByAccount.type || query.chartDataType === allChartDataTypes.IncomeByPrimaryCategory.type || query.chartDataType === allChartDataTypes.IncomeBySecondaryCategory.type }">
-                        <span v-if="!loading && categoricalAnalysisData && categoricalAnalysisData.items && categoricalAnalysisData.items.length">
-                            {{ getDisplayAmount(categoricalAnalysisData.totalAmount, defaultCurrency) }}
+                    <div :class="{ 'statistics-list-item-overview-amount': true, 'text-color-red': query.chartDataType === allChartDataTypes.ExpenseByAccount.type || query.chartDataType === allChartDataTypes.ExpenseByPrimaryCategory.type || query.chartDataType === allChartDataTypes.ExpenseBySecondaryCategory.type, 'text-color-teal': query.chartDataType === allChartDataTypes.IncomeByAccount.type || query.chartDataType === allChartDataTypes.IncomeByPrimaryCategory.type || query.chartDataType === allChartDataTypes.IncomeBySecondaryCategory.type }">
+                        <span v-if="!loading && statisticsData && statisticsData.items && statisticsData.items.length">
+                            {{ getDisplayAmount(statisticsData.totalAmount, defaultCurrency) }}
                         </span>
-                        <span :class="{ 'skeleton-text': loading }" v-else-if="loading || !categoricalAnalysisData || !categoricalAnalysisData.items || !categoricalAnalysisData.items.length">
+                        <span :class="{ 'skeleton-text': loading }" v-else-if="loading || !statisticsData || !statisticsData.items || !statisticsData.items.length">
                             {{ loading ? '***.**' : '---' }}
                         </span>
                     </div>
@@ -128,15 +128,15 @@
                     </f7-list-item>
                 </f7-list>
 
-                <f7-list v-else-if="!loading && (!categoricalAnalysisData || !categoricalAnalysisData.items || !categoricalAnalysisData.items.length)">
+                <f7-list v-else-if="!loading && (!statisticsData || !statisticsData.items || !statisticsData.items.length)">
                     <f7-list-item :title="$t('No transaction data')"></f7-list-item>
                 </f7-list>
 
-                <f7-list v-else-if="!loading && categoricalAnalysisData && categoricalAnalysisData.items && categoricalAnalysisData.items.length">
+                <f7-list v-else-if="!loading && statisticsData && statisticsData.items && statisticsData.items.length">
                     <f7-list-item class="statistics-list-item"
                                   :link="getItemLinkUrl(item)"
                                   :key="idx"
-                                  v-for="(item, idx) in categoricalAnalysisData.items"
+                                  v-for="(item, idx) in statisticsData.items"
                                   v-show="!item.hidden"
                     >
                         <template #media>
@@ -187,18 +187,20 @@
         </f7-popover>
 
         <f7-toolbar tabbar bottom class="toolbar-item-auto-size">
-            <f7-link :class="{ 'disabled': reloading || query.categoricalChartDateType === allDateRanges.All.type || query.chartDataType === allChartDataTypes.AccountTotalAssets.type || query.chartDataType === allChartDataTypes.AccountTotalLiabilities.type }" @click="shiftDateRange(query.categoricalChartStartTime, query.categoricalChartEndTime, -1)">
+            <f7-link :class="{ 'disabled': reloading || query.dateType === allDateRanges.All.type || query.chartDataType === allChartDataTypes.AccountTotalAssets.type || query.chartDataType === allChartDataTypes.AccountTotalLiabilities.type }" @click="shiftDateRange(query.startTime, query.endTime, -1)">
                 <f7-icon f7="arrow_left_square"></f7-icon>
             </f7-link>
             <f7-link :class="{ 'tabbar-text-with-ellipsis': true, 'disabled': reloading || query.chartDataType === allChartDataTypes.AccountTotalAssets.type || query.chartDataType === allChartDataTypes.AccountTotalLiabilities.type }" popover-open=".date-popover-menu">
                 <span :class="{ 'tabbar-item-changed': query.maxTime > 0 || query.minTime > 0 }">{{ dateRangeName(query) }}</span>
             </f7-link>
-            <f7-link :class="{ 'disabled': reloading || query.categoricalChartDateType === allDateRanges.All.type || query.chartDataType === allChartDataTypes.AccountTotalAssets.type || query.chartDataType === allChartDataTypes.AccountTotalLiabilities.type }" @click="shiftDateRange(query.categoricalChartStartTime, query.categoricalChartEndTime, 1)">
+            <f7-link :class="{ 'disabled': reloading || query.dateType === allDateRanges.All.type || query.chartDataType === allChartDataTypes.AccountTotalAssets.type || query.chartDataType === allChartDataTypes.AccountTotalLiabilities.type }" @click="shiftDateRange(query.startTime, query.endTime, 1)">
                 <f7-icon f7="arrow_right_square"></f7-icon>
             </f7-link>
-            <f7-link class="tabbar-text-with-ellipsis" :key="chartType.type"
-                     v-for="chartType in allChartTypes" @click="setChartType(chartType.type)">
-                <span :class="{ 'tabbar-item-changed': query.categoricalChartType === chartType.type }">{{ chartType.displayName }}</span>
+            <f7-link class="tabbar-text-with-ellipsis" @click="setChartType(allChartTypes.Pie)">
+                <span :class="{ 'tabbar-item-changed': query.chartType === allChartTypes.Pie }">{{ $t('Pie Chart') }}</span>
+            </f7-link>
+            <f7-link class="tabbar-text-with-ellipsis" @click="setChartType(allChartTypes.Bar)">
+                <span :class="{ 'tabbar-item-changed': query.chartType === allChartTypes.Bar }">{{ $t('Bar Chart') }}</span>
             </f7-link>
         </f7-toolbar>
 
@@ -206,16 +208,16 @@
                     v-model:opened="showDatePopover"
                     @popover:open="scrollPopoverToSelectedItem">
             <f7-list dividers>
-                <f7-list-item :title="dateRange.displayName"
-                              :class="{ 'list-item-selected': query.categoricalChartDateType === dateRange.type }"
+                <f7-list-item :title="$t(dateRange.name)"
+                              :class="{ 'list-item-selected': query.dateType === dateRange.type }"
                               :key="dateRange.type"
-                              v-for="dateRange in allDateRangesArray"
+                              v-for="dateRange in allDateRanges"
                               @click="setDateFilter(dateRange.type)">
                     <template #after>
-                        <f7-icon class="list-item-checked-icon" f7="checkmark_alt" v-if="query.categoricalChartDateType === dateRange.type"></f7-icon>
+                        <f7-icon class="list-item-checked-icon" f7="checkmark_alt" v-if="query.dateType === dateRange.type"></f7-icon>
                     </template>
                     <template #footer>
-                        <div v-if="dateRange.type === allDateRanges.Custom.type && query.categoricalChartDateType === allDateRanges.Custom.type && query.categoricalChartStartTime && query.categoricalChartEndTime">
+                        <div v-if="dateRange.type === allDateRanges.Custom.type && query.dateType === allDateRanges.Custom.type && query.startTime && query.endTime">
                             <span>{{ queryStartTime }}</span>
                             <span>&nbsp;-&nbsp;</span>
                             <br/>
@@ -227,8 +229,8 @@
         </f7-popover>
 
         <date-range-selection-sheet :title="$t('Custom Date Range')"
-                                    :min-time="query.categoricalChartStartTime"
-                                    :max-time="query.categoricalChartEndTime"
+                                    :min-time="query.startTime"
+                                    :max-time="query.endTime"
                                     v-model:show="showCustomDateRangeSheet"
                                     @dateRange:change="setCustomDateFilter">
         </date-range-selection-sheet>
@@ -261,7 +263,6 @@ import statisticsConstants from '@/consts/statistics.js';
 import { getNameByKeyValue, limitText, formatPercent } from '@/lib/common.js'
 import {
     getShiftedDateRangeAndDateType,
-    getDateTypeByDateRange,
     getDateRangeByDateType
 } from '@/lib/datetime.js';
 import { scrollToSelectedItem } from '@/lib/ui.mobile.js';
@@ -294,7 +295,7 @@ export default {
             return this.statisticsStore.transactionStatisticsFilter;
         },
         queryChartDataCategory() {
-            return this.statisticsStore.categoricalAnalysisChartDataCategory;
+            return this.statisticsStore.transactionStatisticsChartDataCategory;
         },
         queryChartDataTypeName() {
             const queryChartDataTypeName = getNameByKeyValue(this.allChartDataTypes, this.query.chartDataType, 'type', 'name', 'Statistics');
@@ -305,16 +306,13 @@ export default {
             return this.$t(querySortingTypeName);
         },
         queryStartTime() {
-            return this.$locale.formatUnixTimeToLongDateTime(this.userStore, this.query.categoricalChartStartTime);
+            return this.$locale.formatUnixTimeToLongDateTime(this.userStore, this.query.startTime);
         },
         queryEndTime() {
-            return this.$locale.formatUnixTimeToLongDateTime(this.userStore, this.query.categoricalChartEndTime);
+            return this.$locale.formatUnixTimeToLongDateTime(this.userStore, this.query.endTime);
         },
         allChartTypes() {
-            return this.$locale.getAllCategoricalChartTypes();
-        },
-        allCategoricalChartTypes() {
-            return statisticsConstants.allCategoricalChartTypes;
+            return statisticsConstants.allChartTypes;
         },
         allChartDataTypes() {
             return statisticsConstants.allChartDataTypes;
@@ -324,9 +322,6 @@ export default {
         },
         allDateRanges() {
             return datetimeConstants.allDateRanges;
-        },
-        allDateRangesArray() {
-            return this.$locale.getAllDateRanges(datetimeConstants.allDateRangeScenes.Normal, true);
         },
         showAccountBalance() {
             return this.settingsStore.appSettings.showAccountBalance;
@@ -348,8 +343,8 @@ export default {
 
             return this.$t('Total Amount');
         },
-        categoricalAnalysisData() {
-            return this.statisticsStore.categoricalAnalysisData;
+        statisticsData() {
+            return this.statisticsStore.statisticsData;
         },
         showAmountInChart() {
             if (!this.showAccountBalance
@@ -369,7 +364,7 @@ export default {
             self.accountsStore.loadAllAccounts({ force: false }),
             self.transactionCategoriesStore.loadAllCategories({ force: false })
         ]).then(() => {
-            return self.statisticsStore.loadCategoricalAnalysis({
+            return self.statisticsStore.loadTransactionStatistics({
                 force: false
             });
         }).then(() => {
@@ -404,7 +399,7 @@ export default {
                 self.query.chartDataType === self.allChartDataTypes.IncomeByAccount.type ||
                 self.query.chartDataType === self.allChartDataTypes.IncomeByPrimaryCategory.type ||
                 self.query.chartDataType === self.allChartDataTypes.IncomeBySecondaryCategory.type) {
-                dispatchPromise = self.statisticsStore.loadCategoricalAnalysis({
+                dispatchPromise = self.statisticsStore.loadTransactionStatistics({
                     force: force
                 });
             } else if (self.query.chartDataType === self.allChartDataTypes.AccountTotalAssets.type ||
@@ -442,7 +437,7 @@ export default {
         },
         setChartType(chartType) {
             this.statisticsStore.updateTransactionStatisticsFilter({
-                categoricalChartType: chartType
+                chartType: chartType
             });
         },
         setChartDataType(chartDataType) {
@@ -469,7 +464,7 @@ export default {
                 this.showCustomDateRangeSheet = true;
                 this.showDatePopover = false;
                 return;
-            } else if (this.query.categoricalChartDateType === dateType) {
+            } else if (this.query.dateType === dateType) {
                 return;
             }
 
@@ -480,9 +475,9 @@ export default {
             }
 
             this.statisticsStore.updateTransactionStatisticsFilter({
-                categoricalChartDateType: dateRange.dateType,
-                categoricalChartStartTime: dateRange.minTime,
-                categoricalChartEndTime: dateRange.maxTime
+                dateType: dateRange.dateType,
+                startTime: dateRange.minTime,
+                endTime: dateRange.maxTime
             });
 
             this.showDatePopover = false;
@@ -493,12 +488,10 @@ export default {
                 return;
             }
 
-            const chartDateType = getDateTypeByDateRange(startTime, endTime, this.firstDayOfWeek, datetimeConstants.allDateRangeScenes.Normal);
-
             this.statisticsStore.updateTransactionStatisticsFilter({
-                categoricalChartDateType: chartDateType,
-                categoricalChartStartTime: startTime,
-                categoricalChartEndTime: endTime
+                dateType: this.allDateRanges.Custom.type,
+                startTime: startTime,
+                endTime: endTime
             });
 
             this.showCustomDateRangeSheet = false;
@@ -506,16 +499,16 @@ export default {
             this.reload(null);
         },
         shiftDateRange(startTime, endTime, scale) {
-            if (this.query.categoricalChartDateType === this.allDateRanges.All.type) {
+            if (this.query.dateType === this.allDateRanges.All.type) {
                 return;
             }
 
-            const newDateRange = getShiftedDateRangeAndDateType(startTime, endTime, scale, this.firstDayOfWeek, datetimeConstants.allDateRangeScenes.Normal);
+            const newDateRange = getShiftedDateRangeAndDateType(startTime, endTime, scale, this.firstDayOfWeek);
 
             this.statisticsStore.updateTransactionStatisticsFilter({
-                categoricalChartDateType: newDateRange.dateType,
-                categoricalChartStartTime: newDateRange.minTime,
-                categoricalChartEndTime: newDateRange.maxTime
+                dateType: newDateRange.dateType,
+                startTime: newDateRange.minTime,
+                endTime: newDateRange.maxTime
             });
 
             this.reload(null);
@@ -526,7 +519,7 @@ export default {
                 return this.$t(this.allDateRanges.All.name);
             }
 
-            return this.$locale.getDateRangeDisplayName(this.userStore, query.categoricalChartDateType, query.categoricalChartStartTime, query.categoricalChartEndTime);
+            return this.$locale.getDateRangeDisplayName(this.userStore, query.dateType, query.startTime, query.endTime);
         },
         clickPieChartItem(item) {
             this.f7router.navigate(this.getItemLinkUrl(item));
@@ -562,7 +555,8 @@ export default {
         getDisplayCurrency(value, currencyCode) {
             return this.$locale.getDisplayCurrency(value, currencyCode, {
                 currencyDisplayMode: this.settingsStore.appSettings.currencyDisplayMode,
-                enableThousandsSeparator: this.settingsStore.appSettings.thousandsSeparator
+                enableThousandsSeparator: this.settingsStore.appSettings.thousandsSeparator,
+                enableDecimalPoint: this.settingsStore.appSettings.decimalPoint,
             });
         },
         getDisplayPercent(value, precision, lowPrecisionValue) {

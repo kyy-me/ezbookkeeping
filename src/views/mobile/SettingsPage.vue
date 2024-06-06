@@ -47,11 +47,6 @@
                 <f7-toggle :checked="isAutoUpdateExchangeRatesData" @toggle:change="isAutoUpdateExchangeRatesData = $event"></f7-toggle>
             </f7-list-item>
 
-            <f7-list-item>
-                <span>{{ $t('Enable Thousands Separator') }}</span>
-                <f7-toggle :checked="isEnableThousandsSeparator" @toggle:change="isEnableThousandsSeparator = $event"></f7-toggle>
-            </f7-list-item>
-
             <f7-list-item
                 :key="currentLocale + '_currency_display'"
                 :title="$t('Currency Display Mode')"
@@ -64,10 +59,7 @@
                 </select>
             </f7-list-item>
 
-            <f7-list-item>
-                <span>{{ $t('Show Account Balance') }}</span>
-                <f7-toggle :checked="showAccountBalance" @toggle:change="showAccountBalance = $event"></f7-toggle>
-            </f7-list-item>
+            <f7-list-item :title="$t('Currency Settings')" link="/settings/currency"></f7-list-item>
 
             <f7-list-item :title="$t('Page Settings')" link="/settings/page"></f7-list-item>
 

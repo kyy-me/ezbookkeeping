@@ -1,4 +1,4 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 import dateTimeConstants from '@/consts/datetime.js';
 import { isObject, isString, isNumber } from './common.js';
@@ -104,9 +104,9 @@ export function getUtcOffsetByUtcOffsetMinutes(utcOffsetMinutes) {
 
 export function getTimezoneOffset(timezone) {
     if (timezone) {
-        return moment().tz(timezone).format('Z');
+        return dayjs().tz(timezone).format('Z');
     } else {
-        return moment().format('Z');
+        return dayjs().format('Z');
     }
 }
 
@@ -140,11 +140,17 @@ export function getDummyUnixTimeForLocalUsage(unixTime, utcOffset, currentUtcOff
 }
 
 export function getCurrentUnixTime() {
-    return moment().unix();
+    return dayjs().unix();
+}
+
+export function getUnixTimeAddYears(currentUnix, year) {
+    const currentTime = dayjs.unix(currentUnix);
+    const timeAfter3Years = currentTime.add(year, 'year');
+    return timeAfter3Years.unix();
 }
 
 export function getCurrentDateTime() {
-    return moment();
+    return dayjs();
 }
 
 export function parseDateFromUnixTime(unixTime, utcOffset, currentUtcOffset) {
@@ -156,7 +162,7 @@ export function parseDateFromUnixTime(unixTime, utcOffset, currentUtcOffset) {
         unixTime = getDummyUnixTimeForLocalUsage(unixTime, utcOffset, currentUtcOffset);
     }
 
-    return moment.unix(unixTime);
+    return dayjs.unix(unixTime);
 }
 
 export function formatUnixTime(unixTime, format, utcOffset, currentUtcOffset) {
@@ -164,24 +170,24 @@ export function formatUnixTime(unixTime, format, utcOffset, currentUtcOffset) {
 }
 
 export function formatTime(dateTime, format) {
-    return moment(dateTime).format(format);
+    return dayjs(dateTime).format(format);
 }
 
 export function getUnixTime(date) {
-    return moment(date).unix();
+    return dayjs(date).unix();
 }
 
 export function getShortDate(date) {
-    date = moment(date);
+    date = dayjs(date);
     return date.year() + '-' + (date.month() + 1) + '-' + date.date();
 }
 
 export function getYear(date) {
-    return moment(date).year();
+    return dayjs(date).year();
 }
 
 export function getMonth(date) {
-    return moment(date).month() + 1;
+    return dayjs(date).month() + 1;
 }
 
 export function getYearAndMonth(date) {
@@ -204,16 +210,16 @@ export function getYearAndMonthFromUnixTime(unixTime) {
 }
 
 export function getDay(date) {
-    return moment(date).date();
+    return dayjs(date).date();
 }
 
 export function getDayOfWeekName(date) {
-    const dayOfWeek = moment(date).days();
+    const dayOfWeek = dayjs(date).day();
     return dateTimeConstants.allWeekDaysArray[dayOfWeek].name;
-}
+  }
 
 export function getMonthName(date) {
-    const dayOfWeek = moment(date).month();
+    const dayOfWeek = dayjs(date).month();
     return dateTimeConstants.allMonthsArray[dayOfWeek];
 }
 
@@ -222,23 +228,23 @@ export function getAMOrPM(hour) {
 }
 
 export function getHour(date) {
-    return moment(date).hour();
+    return dayjs(date).hour();
 }
 
 export function getMinute(date) {
-    return moment(date).minute();
+    return dayjs(date).minute();
 }
 
 export function getSecond(date) {
-    return moment(date).second();
+    return dayjs(date).second();
 }
 
 export function getUnixTimeBeforeUnixTime(unixTime, amount, unit) {
-    return moment.unix(unixTime).subtract(amount, unit).unix();
+    return dayjs.unix(unixTime).subtract(amount, unit).unix();
 }
 
 export function getUnixTimeAfterUnixTime(unixTime, amount, unit) {
-    return moment.unix(unixTime).add(amount, unit).unix();
+    return dayjs.unix(unixTime).add(amount, unit).unix();
 }
 
 export function getTimeDifferenceHoursAndMinutes(timeDifferenceInMinutes) {
@@ -252,24 +258,24 @@ export function getTimeDifferenceHoursAndMinutes(timeDifferenceInMinutes) {
 }
 
 export function getMinuteFirstUnixTime(date) {
-    const datetime = moment(date);
+    const datetime = dayjs(date);
     return datetime.set({ second: 0, millisecond: 0 }).unix();
 }
 
 export function getMinuteLastUnixTime(date) {
-    return moment.unix(getMinuteFirstUnixTime(date)).add(1, 'minutes').subtract(1, 'seconds').unix();
+    return dayjs.unix(getMinuteFirstUnixTime(date)).add(1, 'minutes').subtract(1, 'seconds').unix();
 }
 
 export function getTodayFirstUnixTime() {
-    return moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix();
-}
+    return dayjs().startOf('day').unix();
+  }
 
 export function getTodayLastUnixTime() {
-    return moment.unix(getTodayFirstUnixTime()).add(1, 'days').subtract(1, 'seconds').unix();
+    return dayjs.unix(getTodayFirstUnixTime()).add(1, 'days').subtract(1, 'seconds').unix();
 }
 
 export function getThisWeekFirstUnixTime(firstDayOfWeek) {
-    const today = moment.unix(getTodayFirstUnixTime());
+    const today = dayjs.unix(getTodayFirstUnixTime());
 
     if (!isNumber(firstDayOfWeek)) {
         firstDayOfWeek = 0;
@@ -285,29 +291,29 @@ export function getThisWeekFirstUnixTime(firstDayOfWeek) {
 }
 
 export function getThisWeekLastUnixTime(firstDayOfWeek) {
-    return moment.unix(getThisWeekFirstUnixTime(firstDayOfWeek)).add(7, 'days').subtract(1, 'seconds').unix();
+    return dayjs.unix(getThisWeekFirstUnixTime(firstDayOfWeek)).add(7, 'days').subtract(1, 'seconds').unix();
 }
 
 export function getThisMonthFirstUnixTime() {
-    const today = moment.unix(getTodayFirstUnixTime());
+    const today = dayjs.unix(getTodayFirstUnixTime());
     return today.subtract(today.date() - 1, 'days').unix();
 }
 
 export function getThisMonthLastUnixTime() {
-    return moment.unix(getThisMonthFirstUnixTime()).add(1, 'months').subtract(1, 'seconds').unix();
+    return dayjs.unix(getThisMonthFirstUnixTime()).add(1, 'months').subtract(1, 'seconds').unix();
 }
 
 export function getThisYearFirstUnixTime() {
-    const today = moment.unix(getTodayFirstUnixTime());
-    return today.subtract(today.dayOfYear() - 1, 'days').unix();
+    const today = dayjs.unix(getTodayFirstUnixTime());
+    return today.startOf('year').unix();
 }
 
 export function getThisYearLastUnixTime() {
-    return moment.unix(getThisYearFirstUnixTime()).add(1, 'years').subtract(1, 'seconds').unix();
+    return dayjs.unix(getThisYearFirstUnixTime()).add(1, 'years').subtract(1, 'seconds').unix();
 }
 
 export function getSpecifiedDayFirstUnixTime(unixTime) {
-    return moment.unix(unixTime).set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix();
+    return dayjs.unix(unixTime).set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix();
 }
 
 export function getYearMonthFirstUnixTime(yearMonth) {
@@ -626,4 +632,12 @@ export function isDateRangeMatchOneMonth(minTime, maxTime) {
     }
 
     return isDateRangeMatchFullMonths(minTime, maxTime);
+}
+
+export function daysCurrentUntilDate(date) {
+    const currentTime = dayjs();
+    const endDateTime = dayjs.unix(date);
+    const duration = endDateTime.diff(currentTime, 'day');
+    const daysRemaining = Math.ceil(duration);
+    return daysRemaining;
 }
