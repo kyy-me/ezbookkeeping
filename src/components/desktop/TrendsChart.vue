@@ -1,6 +1,6 @@
 <template>
     <v-chart autoresize class="trends-chart-container" :class="{ 'transition-in': skeleton }" :option="chartOptions"
-             @click="clickItem" />
+             @click="clickItem" @legendselectchanged="onLegendSelectChanged" />
 </template>
 
 <script>
@@ -28,11 +28,12 @@ export default {
         'idField',
         'nameField',
         'valueField',
-        'currencyField',
         'colorField',
         'hiddenField',
+        'translateName',
         'defaultCurrency',
         'showValue',
+        'showTotalAmountInTooltip',
         'enableClickItem'
     ],
     emits: [
@@ -58,7 +59,7 @@ export default {
                 if (this.idField && item[this.idField]) {
                     id = item[this.idField];
                 } else {
-                    id = item[this.nameField];
+                    id = this.getItemName(item[this.nameField]);
                 }
 
                 map[id] = item;
@@ -136,9 +137,8 @@ export default {
                 }
 
                 const finalItem = {
-                    id: (this.idField && item[this.idField]) ? item[this.idField] : item[this.nameField],
-                    name: (this.idField && item[this.idField]) ? item[this.idField] : item[this.nameField],
-                    currency: item[this.currencyField],
+                    id: (this.idField && item[this.idField]) ? item[this.idField] : this.getItemName(item[this.nameField]),
+                    name: (this.idField && item[this.idField]) ? item[this.idField] : this.getItemName(item[this.nameField]),
                     itemStyle: {
                         color: this.getColor(item[this.colorField] ? item[this.colorField] : colorConstants.defaultChartColors[i % colorConstants.defaultChartColors.length]),
                     },
@@ -160,6 +160,48 @@ export default {
 
             return allSeries;
         },
+        yAxisWidth: function () {
+            let maxValue = Number.MIN_SAFE_INTEGER;
+            let minValue = Number.MAX_SAFE_INTEGER;
+            let width = 90;
+
+            if (!this.allSeries || !this.allSeries.length) {
+                return width;
+            }
+
+            for (let i = 0; i < this.allSeries.length; i++) {
+                for (let j = 0; j < this.allSeries[i].data.length; j++) {
+                    const value = this.allSeries[i].data[j];
+
+                    if (value > maxValue) {
+                        maxValue = value;
+                    }
+
+                    if (value < minValue) {
+                        minValue = value;
+                    }
+                }
+            }
+
+            const maxValueText = this.getDisplayCurrency(maxValue, this.defaultCurrency);
+            const minValueText = this.getDisplayCurrency(minValue, this.defaultCurrency);
+            let maxLengthText = maxValueText.length > minValueText.length ? maxValueText : minValueText;
+
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            context.font = '12px Arial';
+
+            const textMetrics = context.measureText(maxLengthText);
+            const actualWidth = Math.round(textMetrics.width) + 20;
+
+            if (actualWidth >= 200) {
+                width = 200;
+            } if (actualWidth > 90) {
+                width = actualWidth;
+            }
+
+            return width;
+        },
         chartOptions: function () {
             const self = this;
 
@@ -180,22 +222,31 @@ export default {
                     },
                     formatter: params => {
                         let tooltip = '';
-
-                        if (params.length && params[0].name) {
-                            tooltip += `${params[0].name}<br/>`;
-                        }
+                        let totalAmount = 0;
 
                         for (let i = 0; i < params.length; i++) {
                             const id = params[i].seriesId;
-                            const name = self.itemsMap[id] && self.nameField && self.itemsMap[id][self.nameField] ? self.itemsMap[id][self.nameField] : id;
+                            const name = self.itemsMap[id] && self.nameField && self.itemsMap[id][self.nameField] ? self.getItemName(self.itemsMap[id][self.nameField]) : id;
 
-                            if (params[i].data !== 0) {
-                                const currency = self.itemsMap[id] && self.currencyField && self.itemsMap[id][self.currencyField] ? self.itemsMap[id][self.currencyField] : self.defaultCurrency;
-                                const value = self.getDisplayCurrency(params[i].data, currency);
+                            if (params.length === 1 || params[i].data !== 0) {
+                                const value = self.getDisplayCurrency(params[i].data, self.defaultCurrency);
                                 tooltip += '<div><span class="chart-pointer" style="background-color: ' + params[i].color + '"></span>';
                                 tooltip += `<span>${name}</span><span style="margin-left: 20px; float: right">${value}</span><br/>`;
                                 tooltip += '</div>';
+                                totalAmount += params[i].data;
                             }
+                        }
+
+                        if (self.showTotalAmountInTooltip) {
+                            const displayTotalAmount = self.getDisplayCurrency(totalAmount, self.defaultCurrency);
+                            tooltip = '<div style="border-bottom: ' + (self.isDarkMode ? '#eee' : '#333') + ' dashed 1px">'
+                                + '<span class="chart-pointer" style="background-color: ' + (self.isDarkMode ? '#eee' : '#333') + '"></span>'
+                                + `<span>${self.$t('Total Amount')}</span><span style="margin-left: 20px; float: right">${displayTotalAmount}</span><br/>`
+                                + '</div>' + tooltip;
+                        }
+
+                        if (params.length && params[0].name) {
+                            tooltip = `${params[0].name}<br/>` + tooltip;
                         }
 
                         return tooltip;
@@ -209,8 +260,12 @@ export default {
                         color: self.isDarkMode ? '#eee' : '#333'
                     },
                     formatter: id => {
-                        return self.itemsMap[id] && self.nameField && self.itemsMap[id][self.nameField] ? self.itemsMap[id][self.nameField] : id;
+                        return self.itemsMap[id] && self.nameField && self.itemsMap[id][self.nameField] ? self.getItemName(self.itemsMap[id][self.nameField]) : id;
                     }
+                },
+                grid: {
+                    left: self.yAxisWidth,
+                    right: 20
                 },
                 xAxis: [
                     {
@@ -268,6 +323,12 @@ export default {
 
             return color;
         },
+        getItemName(name) {
+            return this.translateName ? this.$t(name) : name;
+        },
+        onLegendSelectChanged: function (e) {
+            this.selectedLegends = e.selected;
+        },
         getDisplayCurrency(value, currencyCode) {
             return this.$locale.getDisplayCurrency(value, currencyCode, {
                 currencyDisplayMode: this.settingsStore.appSettings.currencyDisplayMode,
@@ -281,7 +342,7 @@ export default {
 <style scoped>
 .trends-chart-container {
     width: 100%;
-    height: 500px;
+    height: 560px;
     margin-top: 10px;
 }
 

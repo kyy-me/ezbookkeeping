@@ -118,7 +118,7 @@
                                     </template>
 
                                     <v-card-text class="statistics-overview-title pt-0" :class="{ 'disabled': loading }"
-                                                 v-if="initing || (analysisType === allAnalysisTypes.CategoricalAnalysis && categoricalAnalysisData && categoricalAnalysisData.items && categoricalAnalysisData.items.length)">
+                                                 v-if="analysisType === allAnalysisTypes.CategoricalAnalysis && (initing || (categoricalAnalysisData && categoricalAnalysisData.items && categoricalAnalysisData.items.length))">
                                         <span class="statistics-subtitle">{{ totalAmountName }}</span>
                                         <span class="statistics-overview-amount ml-3"
                                               :class="statisticsTextColor"
@@ -160,7 +160,6 @@
                                             name-field="name"
                                             value-field="totalAmount"
                                             percent-field="percent"
-                                            currency-field="currency"
                                             hidden-field="hidden"
                                             v-else-if="!initing"
                                             @click="clickPieChartItem"
@@ -240,15 +239,16 @@
                                             :start-year-month="query.trendChartStartYearMonth"
                                             :end-year-month="query.trendChartEndYearMonth"
                                             :items="trendsAnalysisData && trendsAnalysisData.items && trendsAnalysisData.items.length ? trendsAnalysisData.items : []"
+                                            :translate-name="translateNameInTrendsChart"
                                             :show-value="showAmountInChart"
                                             :enable-click-item="true"
                                             :default-currency="defaultCurrency"
+                                            :show-total-amount-in-tooltip="showTotalAmountInTrendsChart"
                                             id-field="id"
                                             name-field="name"
                                             value-field="totalAmount"
-                                            currency-field="currency"
                                             hidden-field="hidden"
-                                            v-else-if="!initing"
+                                            v-else-if="!initing && trendsAnalysisData && trendsAnalysisData.items && trendsAnalysisData.items.length"
                                             @click="clickTrendChartItem"
                                         />
                                     </v-card-text>
@@ -481,6 +481,16 @@ export default {
         trendsAnalysisData() {
             return this.statisticsStore.trendsAnalysisData;
         },
+        translateNameInTrendsChart() {
+            return this.query.chartDataType === this.allChartDataTypes.TotalExpense.type ||
+                this.query.chartDataType === this.allChartDataTypes.TotalIncome.type ||
+                this.query.chartDataType === this.allChartDataTypes.TotalBalance.type;
+        },
+        showTotalAmountInTrendsChart() {
+            return this.query.chartDataType !== this.allChartDataTypes.TotalExpense.type &&
+                this.query.chartDataType !== this.allChartDataTypes.TotalIncome.type &&
+                this.query.chartDataType !== this.allChartDataTypes.TotalBalance.type;
+        },
         statisticsTextColor() {
             if (this.query.chartDataType === this.allChartDataTypes.ExpenseByAccount.type ||
                 this.query.chartDataType === this.allChartDataTypes.ExpenseByPrimaryCategory.type ||
@@ -585,7 +595,10 @@ export default {
                 self.query.chartDataType === self.allChartDataTypes.ExpenseBySecondaryCategory.type ||
                 self.query.chartDataType === self.allChartDataTypes.IncomeByAccount.type ||
                 self.query.chartDataType === self.allChartDataTypes.IncomeByPrimaryCategory.type ||
-                self.query.chartDataType === self.allChartDataTypes.IncomeBySecondaryCategory.type) {
+                self.query.chartDataType === self.allChartDataTypes.IncomeBySecondaryCategory.type ||
+                self.query.chartDataType === self.allChartDataTypes.TotalExpense.type ||
+                self.query.chartDataType === self.allChartDataTypes.TotalIncome.type ||
+                self.query.chartDataType === self.allChartDataTypes.TotalBalance.type) {
                 if (this.analysisType === statisticsConstants.allAnalysisTypes.CategoricalAnalysis) {
                     dispatchPromise = self.statisticsStore.loadCategoricalAnalysis({
                         force: force

@@ -1010,6 +1010,7 @@ export default {
     'Total Liabilities': 'Total Liabilities',
     'Total Expense': 'Total Expense',
     'Total Income': 'Total Income',
+    'Total Balance': 'Total Balance',
     'Expense By Account': 'Expense By Account',
     'Expense By Primary Category': 'Expense By Primary Category',
     'Expense By Secondary Category': 'Expense By Secondary Category',

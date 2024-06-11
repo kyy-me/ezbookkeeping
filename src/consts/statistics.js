@@ -103,6 +103,27 @@ const allChartDataTypes = {
         availableAnalysisTypes: {
             [allAnalysisTypes.CategoricalAnalysis]: true
         }
+    },
+    TotalExpense: {
+        type: 8,
+        name: 'Total Expense',
+        availableAnalysisTypes: {
+            [allAnalysisTypes.TrendAnalysis]: true
+        }
+    },
+    TotalIncome: {
+        type: 9,
+        name: 'Total Income',
+        availableAnalysisTypes: {
+            [allAnalysisTypes.TrendAnalysis]: true
+        }
+    },
+    TotalBalance: {
+        type: 10,
+        name: 'Total Balance',
+        availableAnalysisTypes: {
+            [allAnalysisTypes.TrendAnalysis]: true
+        }
     }
 };
 
@@ -145,7 +166,7 @@ export default {
     allChartDataTypes: allChartDataTypes,
     defaultChartDataType: defaultChartDataType,
     defaultCategoricalChartDataRangeType: datetime.allDateRanges.ThisMonth.type,
-    defaultTrendChartDataRangeType: datetime.allDateRanges.RecentTwelveMonths.type,
+    defaultTrendChartDataRangeType: datetime.allDateRanges.ThisYear.type,
     allSortingTypes: allSortingTypes,
     allSortingTypesArray: allSortingTypesArray,
     defaultSortingType: defaultSortingType,
