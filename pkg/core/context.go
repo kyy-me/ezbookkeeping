@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/hocx/ezbookkeeping/pkg/errs"
+	"github.com/kyy-me/ezbookkeeping/pkg/errs"
 )
 
 const requestIdFieldKey = "REQUEST_ID"

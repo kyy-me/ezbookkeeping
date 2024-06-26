@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/hocx/ezbookkeeping/pkg/settings"
-	"github.com/hocx/ezbookkeeping/pkg/utils"
+	"github.com/kyy-me/ezbookkeeping/pkg/settings"
+	"github.com/kyy-me/ezbookkeeping/pkg/utils"
 )
 
 // TransactionEditScope represents the scope which transaction can be edited

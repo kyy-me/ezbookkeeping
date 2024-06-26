@@ -6,13 +6,13 @@ import (
 
 	"github.com/urfave/cli/v2"
 
-	"github.com/hocx/ezbookkeeping/pkg/datastore"
-	"github.com/hocx/ezbookkeeping/pkg/exchangerates"
-	"github.com/hocx/ezbookkeeping/pkg/log"
-	"github.com/hocx/ezbookkeeping/pkg/mail"
-	"github.com/hocx/ezbookkeeping/pkg/settings"
-	"github.com/hocx/ezbookkeeping/pkg/utils"
-	"github.com/hocx/ezbookkeeping/pkg/uuid"
+	"github.com/kyy-me/ezbookkeeping/pkg/datastore"
+	"github.com/kyy-me/ezbookkeeping/pkg/exchangerates"
+	"github.com/kyy-me/ezbookkeeping/pkg/log"
+	"github.com/kyy-me/ezbookkeeping/pkg/mail"
+	"github.com/kyy-me/ezbookkeeping/pkg/settings"
+	"github.com/kyy-me/ezbookkeeping/pkg/utils"
+	"github.com/kyy-me/ezbookkeeping/pkg/uuid"
 )
 
 func initializeSystem(c *cli.Context) (*settings.Config, error) {

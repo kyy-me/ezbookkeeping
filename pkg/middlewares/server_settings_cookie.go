@@ -6,8 +6,8 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/hocx/ezbookkeeping/pkg/core"
-	"github.com/hocx/ezbookkeeping/pkg/settings"
+	"github.com/kyy-me/ezbookkeeping/pkg/core"
+	"github.com/kyy-me/ezbookkeeping/pkg/settings"
 )
 
 const settingsCookieName = "ebk_server_settings"

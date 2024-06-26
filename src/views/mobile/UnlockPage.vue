@@ -60,7 +60,7 @@
                     <span>Powered by</span>
                     <f7-link
                         external
-                        href="https://github.com/hocx/ezbookkeeping"
+                        href="https://github.com/kyy-me/ezbookkeeping"
                         target="_blank"
                         >ezBookkeeping</f7-link
                     >
@@ -79,7 +79,7 @@
                 <span>Powered by</span>
                 <f7-link
                     external
-                    href="https://github.com/hocx/ezbookkeeping"
+                    href="https://github.com/kyy-me/ezbookkeeping"
                     target="_blank"
                     >ezBookkeeping</f7-link
                 >

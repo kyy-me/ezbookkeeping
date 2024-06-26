@@ -1,10 +1,10 @@
 # ezBookkeeping
 
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/hocx/ezbookkeeping/blob/master/LICENSE)
-[![Latest Build](https://img.shields.io/github/actions/workflow/status/hocx/ezbookkeeping/build-and-publish.yml?branch=main)](https://github.com/hocx/ezbookkeeping/actions)
-[![Go Report](https://goreportcard.com/badge/github.com/hocx/ezbookkeeping)](https://goreportcard.com/report/github.com/hocx/ezbookkeeping)
-[![GitHub repo size](https://img.shields.io/github/repo-size/hocx/ezbookkeeping)](https://github.com/hocx/ezbookkeeping)
-![GitHub Release](https://img.shields.io/github/v/release/hocx/ezbookkeeping)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/kyy-me/ezbookkeeping/blob/master/LICENSE)
+[![Latest Build](https://img.shields.io/github/actions/workflow/status/kyy-me/ezbookkeeping/build-and-publish.yml?branch=main)](https://github.com/kyy-me/ezbookkeeping/actions)
+[![Go Report](https://goreportcard.com/badge/github.com/kyy-me/ezbookkeeping)](https://goreportcard.com/report/github.com/kyy-me/ezbookkeeping)
+[![GitHub repo size](https://img.shields.io/github/repo-size/kyy-me/ezbookkeeping)](https://github.com/kyy-me/ezbookkeeping)
+![GitHub Release](https://img.shields.io/github/v/release/kyy-me/ezbookkeeping)
 ![Uptime Robot status](https://img.shields.io/uptimerobot/status/m796703781-a378b3be0eb750ec6e8508a9)
 
 ## Introduction
@@ -39,29 +39,29 @@ ezBookkeeping is a lightweight personal bookkeeping app hosted by yourself. It c
 
 ### Desktop Version
 
-[![ezBookkeeping](https://raw.githubusercontent.com/wiki/hocx/ezbookkeeping/img/desktop/en.png)](https://raw.githubusercontent.com/wiki/hocx/ezbookkeeping/img/desktop/en.png)
+[![ezBookkeeping](https://raw.githubusercontent.com/wiki/kyy-me/ezbookkeeping/img/desktop/en.png)](https://raw.githubusercontent.com/wiki/kyy-me/ezbookkeeping/img/desktop/en.png)
 
 ### Mobile Version
 
-[![ezBookkeeping](https://raw.githubusercontent.com/wiki/hocx/ezbookkeeping/img/mobile/en.png)](https://raw.githubusercontent.com/wiki/hocx/ezbookkeeping/img/mobile/en.png)
+[![ezBookkeeping](https://raw.githubusercontent.com/wiki/kyy-me/ezbookkeeping/img/mobile/en.png)](https://raw.githubusercontent.com/wiki/kyy-me/ezbookkeeping/img/mobile/en.png)
 
 ## Installation
 
 ### Ship with docker
 
-Visit [Docker Hub](https://hub.docker.com/r/hocx/ezbookkeeping) to see all images and tags.
+Visit [Docker Hub](https://hub.docker.com/r/kyy-me/ezbookkeeping) to see all images and tags.
 
 Latest Release:
 
-    $ docker run -p8080:8080 mayswind/ezbookkeeping
+    $ docker run -p8080:8080 kyy-me/ezbookkeeping
 
 Latest Daily Build:
 
-    $ docker run -p8080:8080 mayswind/ezbookkeeping:latest-snapshot
+    $ docker run -p8080:8080 kyy-me/ezbookkeeping:latest-snapshot
 
 ### Install from binary
 
-Latest release: [https://github.com/hocx/ezbookkeeping/releases](https://github.com/hocx/ezbookkeeping/releases)
+Latest release: [https://github.com/kyy-me/ezbookkeeping/releases](https://github.com/kyy-me/ezbookkeeping/releases)
 
 **Linux / macOS**
 
@@ -97,9 +97,9 @@ You can also build docker image, make sure you have [docker](https://www.docker.
 
 ## Documents
 
-1. [English](http://ezbookkeeping.mayswind.net)
-1. [简体中文 (Simplified Chinese)](http://ezbookkeeping.mayswind.net/zh_Hans)
+1. [English](http://ezbookkeeping.kyy-me.net)
+1. [简体中文 (Simplified Chinese)](http://ezbookkeeping.kyy-me.net/zh_Hans)
 
 ## License
 
-[MIT](https://github.com/hocx/ezbookkeeping/blob/master/LICENSE)
+[MIT](https://github.com/kyy-me/ezbookkeeping/blob/master/LICENSE)

@@ -30,10 +30,10 @@
                         <v-col cols="12" md="10" class="mb-6">
                             <a
                                 class="text-body-1"
-                                href="https://github.com/hocx/ezbookkeeping"
+                                href="https://github.com/kyy-me/ezbookkeeping"
                                 target="_blank"
                             >
-                                https://github.com/hocx/ezbookkeeping
+                                https://github.com/kyy-me/ezbookkeeping
                             </a>
                         </v-col>
                     </v-row>

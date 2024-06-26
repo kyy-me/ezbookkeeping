@@ -215,7 +215,7 @@
                                 <v-col cols="12" class="text-center text-sm">
                                     <span>Powered by </span>
                                     <a
-                                        href="https://github.com/hocx/ezbookkeeping"
+                                        href="https://github.com/kyy-me/ezbookkeeping"
                                         target="_blank"
                                         >ezBookkeeping</a
                                     >&nbsp;<span>{{ version }}</span>

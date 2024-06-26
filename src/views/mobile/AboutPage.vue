@@ -15,7 +15,7 @@
             <f7-list-item
                 external
                 :title="$t('Official Website')"
-                link="https://github.com/hocx/ezbookkeeping"
+                link="https://github.com/kyy-me/ezbookkeeping"
                 target="_blank"
             ></f7-list-item>
             <f7-list-item

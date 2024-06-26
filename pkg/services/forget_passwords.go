@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/hocx/ezbookkeeping/pkg/core"
-	"github.com/hocx/ezbookkeeping/pkg/errs"
-	"github.com/hocx/ezbookkeeping/pkg/locales"
-	"github.com/hocx/ezbookkeeping/pkg/mail"
-	"github.com/hocx/ezbookkeeping/pkg/models"
-	"github.com/hocx/ezbookkeeping/pkg/settings"
-	"github.com/hocx/ezbookkeeping/pkg/templates"
+	"github.com/kyy-me/ezbookkeeping/pkg/core"
+	"github.com/kyy-me/ezbookkeeping/pkg/errs"
+	"github.com/kyy-me/ezbookkeeping/pkg/locales"
+	"github.com/kyy-me/ezbookkeeping/pkg/mail"
+	"github.com/kyy-me/ezbookkeeping/pkg/models"
+	"github.com/kyy-me/ezbookkeeping/pkg/settings"
+	"github.com/kyy-me/ezbookkeeping/pkg/templates"
 )
 
 const passwordResetUrlFormat = "%sdesktop/#/resetpassword?token=%s"

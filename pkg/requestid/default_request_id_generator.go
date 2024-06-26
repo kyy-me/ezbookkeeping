@@ -11,10 +11,10 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/hocx/ezbookkeeping/pkg/errs"
-	"github.com/hocx/ezbookkeeping/pkg/log"
-	"github.com/hocx/ezbookkeeping/pkg/settings"
-	"github.com/hocx/ezbookkeeping/pkg/utils"
+	"github.com/kyy-me/ezbookkeeping/pkg/errs"
+	"github.com/kyy-me/ezbookkeeping/pkg/log"
+	"github.com/kyy-me/ezbookkeeping/pkg/settings"
+	"github.com/kyy-me/ezbookkeeping/pkg/utils"
 )
 
 // Length and mask of all information in request id

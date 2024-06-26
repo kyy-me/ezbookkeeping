@@ -4,7 +4,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/hocx/ezbookkeeping/pkg/settings"
+	"github.com/kyy-me/ezbookkeeping/pkg/settings"
 )
 
 // Length and mask of all information in uuid

@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/hocx/ezbookkeeping/pkg/core"
-	"github.com/hocx/ezbookkeeping/pkg/models"
+	"github.com/kyy-me/ezbookkeeping/pkg/core"
+	"github.com/kyy-me/ezbookkeeping/pkg/models"
 	"github.com/gin-gonic/gin"
 )
 

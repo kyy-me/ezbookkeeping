@@ -6,8 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/hocx/ezbookkeeping/pkg/core"
-	"github.com/hocx/ezbookkeeping/pkg/models"
+	"github.com/kyy-me/ezbookkeeping/pkg/core"
+	"github.com/kyy-me/ezbookkeeping/pkg/models"
 )
 
 const czechNationalBankMinimumRequiredContent = "01 Apr 2021 #64\n" +

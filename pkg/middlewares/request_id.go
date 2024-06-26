@@ -1,9 +1,9 @@
 package middlewares
 
 import (
-	"github.com/hocx/ezbookkeeping/pkg/core"
-	"github.com/hocx/ezbookkeeping/pkg/requestid"
-	"github.com/hocx/ezbookkeeping/pkg/settings"
+	"github.com/kyy-me/ezbookkeeping/pkg/core"
+	"github.com/kyy-me/ezbookkeeping/pkg/requestid"
+	"github.com/kyy-me/ezbookkeeping/pkg/settings"
 )
 
 const requestIdHeader = "X-Request-ID"

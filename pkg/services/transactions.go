@@ -7,12 +7,12 @@ import (
 
 	"xorm.io/xorm"
 
-	"github.com/hocx/ezbookkeeping/pkg/core"
-	"github.com/hocx/ezbookkeeping/pkg/datastore"
-	"github.com/hocx/ezbookkeeping/pkg/errs"
-	"github.com/hocx/ezbookkeeping/pkg/models"
-	"github.com/hocx/ezbookkeeping/pkg/utils"
-	"github.com/hocx/ezbookkeeping/pkg/uuid"
+	"github.com/kyy-me/ezbookkeeping/pkg/core"
+	"github.com/kyy-me/ezbookkeeping/pkg/datastore"
+	"github.com/kyy-me/ezbookkeeping/pkg/errs"
+	"github.com/kyy-me/ezbookkeeping/pkg/models"
+	"github.com/kyy-me/ezbookkeeping/pkg/utils"
+	"github.com/kyy-me/ezbookkeeping/pkg/uuid"
 )
 
 const pageCountForLoadTransactionAmounts = 1000

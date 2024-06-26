@@ -4,12 +4,12 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hocx/ezbookkeeping.git"
+    "url": "git+https://github.com/kyy-me/ezbookkeeping.git"
   },
-  "author": "MaysWind <i@mayswind.net>",
+  "author": "kyy-me <i@kyy-me.net>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/hocx/ezbookkeeping/issues"
+    "url": "https://github.com/kyy-me/ezbookkeeping/issues"
   },
   "scripts": {
     "air": "air -c conf/air.toml",
@@ -69,5 +69,5 @@
     "last 2 versions",
     "not dead"
   ],
-  "packageManager": "yarn@4.3.0"
+  "packageManager": "yarn@4.3.1"
 }

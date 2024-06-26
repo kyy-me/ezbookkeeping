@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/hocx/ezbookkeeping/pkg/settings"
+	"github.com/kyy-me/ezbookkeeping/pkg/settings"
 )
 
 func TestNewDefaultRequestIdGenerator_Http(t *testing.T) {

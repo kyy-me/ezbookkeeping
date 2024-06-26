@@ -1,7 +1,7 @@
 package converters
 
 import (
-	"github.com/mayswind/ezbookkeeping/pkg/models"
+	"github.com/kyy-me/ezbookkeeping/pkg/models"
 )
 
 // EzBookKeepingTSVFileExporter defines the structure of TSV file exporter

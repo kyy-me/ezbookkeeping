@@ -3,11 +3,11 @@ package middlewares
 import (
 	"github.com/golang-jwt/jwt/v5"
 
-	"github.com/hocx/ezbookkeeping/pkg/core"
-	"github.com/hocx/ezbookkeeping/pkg/errs"
-	"github.com/hocx/ezbookkeeping/pkg/log"
-	"github.com/hocx/ezbookkeeping/pkg/services"
-	"github.com/hocx/ezbookkeeping/pkg/utils"
+	"github.com/kyy-me/ezbookkeeping/pkg/core"
+	"github.com/kyy-me/ezbookkeeping/pkg/errs"
+	"github.com/kyy-me/ezbookkeeping/pkg/log"
+	"github.com/kyy-me/ezbookkeeping/pkg/services"
+	"github.com/kyy-me/ezbookkeeping/pkg/utils"
 )
 
 // TokenSourceType represents token source

@@ -7,10 +7,10 @@ import (
 
 	"github.com/urfave/cli/v2"
 
-	"github.com/hocx/ezbookkeeping/pkg/errs"
-	"github.com/hocx/ezbookkeeping/pkg/mail"
-	"github.com/hocx/ezbookkeeping/pkg/requestid"
-	"github.com/hocx/ezbookkeeping/pkg/utils"
+	"github.com/kyy-me/ezbookkeeping/pkg/errs"
+	"github.com/kyy-me/ezbookkeeping/pkg/mail"
+	"github.com/kyy-me/ezbookkeeping/pkg/requestid"
+	"github.com/kyy-me/ezbookkeeping/pkg/utils"
 )
 
 // Utilities represents the utilities command

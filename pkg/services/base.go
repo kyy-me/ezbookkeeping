@@ -1,11 +1,11 @@
 package services
 
 import (
-	"github.com/hocx/ezbookkeeping/pkg/datastore"
-	"github.com/hocx/ezbookkeeping/pkg/errs"
-	"github.com/hocx/ezbookkeeping/pkg/mail"
-	"github.com/hocx/ezbookkeeping/pkg/settings"
-	"github.com/hocx/ezbookkeeping/pkg/uuid"
+	"github.com/kyy-me/ezbookkeeping/pkg/datastore"
+	"github.com/kyy-me/ezbookkeeping/pkg/errs"
+	"github.com/kyy-me/ezbookkeeping/pkg/mail"
+	"github.com/kyy-me/ezbookkeeping/pkg/settings"
+	"github.com/kyy-me/ezbookkeeping/pkg/uuid"
 )
 
 // ServiceUsingDB represents a service that need to use db

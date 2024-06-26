@@ -5,13 +5,13 @@ import (
 
 	"github.com/urfave/cli/v2"
 
-	"github.com/hocx/ezbookkeeping/pkg/converters"
-	"github.com/hocx/ezbookkeeping/pkg/errs"
-	"github.com/hocx/ezbookkeeping/pkg/log"
-	"github.com/hocx/ezbookkeeping/pkg/models"
-	"github.com/hocx/ezbookkeeping/pkg/services"
-	"github.com/hocx/ezbookkeeping/pkg/settings"
-	"github.com/hocx/ezbookkeeping/pkg/validators"
+	"github.com/kyy-me/ezbookkeeping/pkg/converters"
+	"github.com/kyy-me/ezbookkeeping/pkg/errs"
+	"github.com/kyy-me/ezbookkeeping/pkg/log"
+	"github.com/kyy-me/ezbookkeeping/pkg/models"
+	"github.com/kyy-me/ezbookkeeping/pkg/services"
+	"github.com/kyy-me/ezbookkeeping/pkg/settings"
+	"github.com/kyy-me/ezbookkeeping/pkg/validators"
 )
 
 const pageCountForGettingTransactions = 1000

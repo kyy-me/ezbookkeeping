@@ -1,4 +1,4 @@
-module github.com/hocx/ezbookkeeping
+module github.com/kyy-me/ezbookkeeping
 
 go 1.21
 

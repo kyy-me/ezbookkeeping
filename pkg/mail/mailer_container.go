@@ -1,7 +1,7 @@
 package mail
 
 import (
-	"github.com/hocx/ezbookkeeping/pkg/settings"
+	"github.com/kyy-me/ezbookkeeping/pkg/settings"
 )
 
 // MailerContainer contains the current mailer

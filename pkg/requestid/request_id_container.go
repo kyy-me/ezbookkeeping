@@ -1,7 +1,7 @@
 package requestid
 
 import (
-	"github.com/hocx/ezbookkeeping/pkg/settings"
+	"github.com/kyy-me/ezbookkeeping/pkg/settings"
 )
 
 // RequestIdContainer contains the current request id generator

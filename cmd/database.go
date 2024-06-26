@@ -3,9 +3,9 @@ package cmd
 import (
 	"github.com/urfave/cli/v2"
 
-	"github.com/hocx/ezbookkeeping/pkg/datastore"
-	"github.com/hocx/ezbookkeeping/pkg/log"
-	"github.com/hocx/ezbookkeeping/pkg/models"
+	"github.com/kyy-me/ezbookkeeping/pkg/datastore"
+	"github.com/kyy-me/ezbookkeeping/pkg/log"
+	"github.com/kyy-me/ezbookkeeping/pkg/models"
 )
 
 // Database represents the database command

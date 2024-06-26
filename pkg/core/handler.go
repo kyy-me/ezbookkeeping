@@ -3,7 +3,7 @@ package core
 import (
 	"net/http/httputil"
 
-	"github.com/hocx/ezbookkeeping/pkg/errs"
+	"github.com/kyy-me/ezbookkeeping/pkg/errs"
 )
 
 // MiddlewareHandlerFunc represents the middleware handler function

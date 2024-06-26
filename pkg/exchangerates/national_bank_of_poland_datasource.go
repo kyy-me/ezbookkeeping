@@ -6,12 +6,12 @@ import (
 	"math"
 	"time"
 
-	"github.com/hocx/ezbookkeeping/pkg/core"
-	"github.com/hocx/ezbookkeeping/pkg/errs"
-	"github.com/hocx/ezbookkeeping/pkg/log"
-	"github.com/hocx/ezbookkeeping/pkg/models"
-	"github.com/hocx/ezbookkeeping/pkg/utils"
-	"github.com/hocx/ezbookkeeping/pkg/validators"
+	"github.com/kyy-me/ezbookkeeping/pkg/core"
+	"github.com/kyy-me/ezbookkeeping/pkg/errs"
+	"github.com/kyy-me/ezbookkeeping/pkg/log"
+	"github.com/kyy-me/ezbookkeeping/pkg/models"
+	"github.com/kyy-me/ezbookkeeping/pkg/utils"
+	"github.com/kyy-me/ezbookkeeping/pkg/validators"
 )
 
 const nationalBankOfPolandDailyExchangeRateUrl = "https://api.nbp.pl/api/exchangerates/tables/A?format=xml"

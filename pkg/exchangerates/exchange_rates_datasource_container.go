@@ -1,8 +1,8 @@
 package exchangerates
 
 import (
-	"github.com/hocx/ezbookkeeping/pkg/errs"
-	"github.com/hocx/ezbookkeeping/pkg/settings"
+	"github.com/kyy-me/ezbookkeeping/pkg/errs"
+	"github.com/kyy-me/ezbookkeeping/pkg/settings"
 )
 
 // ExchangeRatesDataSourceContainer contains the current exchange rates data source

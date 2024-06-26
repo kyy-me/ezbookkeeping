@@ -1,8 +1,8 @@
 package middlewares
 
 import (
-	"github.com/hocx/ezbookkeeping/pkg/core"
-	"github.com/hocx/ezbookkeeping/pkg/settings"
+	"github.com/kyy-me/ezbookkeeping/pkg/core"
+	"github.com/kyy-me/ezbookkeeping/pkg/settings"
 )
 
 const tokenCookieParam = "ebk_auth_token"

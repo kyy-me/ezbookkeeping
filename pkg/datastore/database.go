@@ -3,7 +3,7 @@ package datastore
 import (
 	"xorm.io/xorm"
 
-	"github.com/hocx/ezbookkeeping/pkg/core"
+	"github.com/kyy-me/ezbookkeeping/pkg/core"
 )
 
 // Database represents a database instance

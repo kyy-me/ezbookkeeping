@@ -3,8 +3,8 @@ package models
 import (
 	"strings"
 
-	"github.com/hocx/ezbookkeeping/pkg/errs"
-	"github.com/hocx/ezbookkeeping/pkg/utils"
+	"github.com/kyy-me/ezbookkeeping/pkg/errs"
+	"github.com/kyy-me/ezbookkeeping/pkg/utils"
 )
 
 // TransactionType represents transaction type
