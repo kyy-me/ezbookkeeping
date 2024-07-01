@@ -1,6 +1,6 @@
-import numeralConstants from '@/consts/numeral.js';
+import numeralConstants from "@/consts/numeral.js";
 
-import { isString, isNumber, removeAll } from './common.js';
+import { isString, isNumber, removeAll } from "./common.js";
 
 export function appendDigitGroupingSymbol(value, options) {
     if (isNumber(value)) {
@@ -15,7 +15,11 @@ export function appendDigitGroupingSymbol(value, options) {
         options = {};
     }
 
-    if (!isNumber(options.digitGrouping) || options.digitGrouping === numeralConstants.allDigitGroupingType.None.type) {
+    if (
+        !isNumber(options.digitGrouping) ||
+        options.digitGrouping ===
+            numeralConstants.allDigitGroupingType.None.type
+    ) {
         return value;
     }
 
@@ -23,23 +27,27 @@ export function appendDigitGroupingSymbol(value, options) {
         return value;
     }
 
-    const negative = value.charAt(0) === '-';
+    const negative = value.charAt(0) === "-";
 
     if (negative) {
         value = value.substring(1);
     }
 
-    const digitGroupingSymbol = options.digitGroupingSymbol || numeralConstants.defaultDigitGroupingSymbol.symbol;
-    const decimalSeparator = options.decimalSeparator || numeralConstants.defaultDecimalSeparator.symbol;
+    const digitGroupingSymbol =
+        options.digitGroupingSymbol ||
+        numeralConstants.defaultDigitGroupingSymbol.symbol;
+    const decimalSeparator =
+        options.decimalSeparator ||
+        numeralConstants.defaultDecimalSeparator.symbol;
 
     let integerChars = [];
-    let currentDecimalSeparator = '';
-    let decimals = '';
+    let currentDecimalSeparator = "";
+    let decimals = "";
 
     for (let i = 0; i < value.length; i++) {
         const ch = value.charAt(i);
 
-        if ('0' <= ch && ch <= '9') {
+        if ("0" <= ch && ch <= "9") {
             integerChars.push(ch);
         } else {
             currentDecimalSeparator = ch;
@@ -48,9 +56,12 @@ export function appendDigitGroupingSymbol(value, options) {
         }
     }
 
-    let newInteger = '';
+    let newInteger = "";
 
-    if (options.digitGrouping === numeralConstants.allDigitGroupingType.ThousandsSeparator.type) {
+    if (
+        options.digitGrouping ===
+        numeralConstants.allDigitGroupingType.ThousandsSeparator.type
+    ) {
         for (let i = integerChars.length - 1, j = 0; i >= 0; i--, j++) {
             if (j % 3 === 0 && j > 0) {
                 newInteger = digitGroupingSymbol + newInteger;
@@ -84,7 +95,7 @@ export function parseAmount(str, options) {
         return 0;
     }
 
-    const negative = str.charAt(0) === '-';
+    const negative = str.charAt(0) === "-";
 
     if (negative) {
         str = str.substring(1);
@@ -96,8 +107,12 @@ export function parseAmount(str, options) {
 
     const sign = negative ? -1 : 1;
 
-    const decimalSeparator = options.decimalSeparator || numeralConstants.defaultDecimalSeparator.symbol;
-    const digitGroupingSymbol = options.digitGroupingSymbol || numeralConstants.defaultDigitGroupingSymbol.symbol;
+    const decimalSeparator =
+        options.decimalSeparator ||
+        numeralConstants.defaultDecimalSeparator.symbol;
+    const digitGroupingSymbol =
+        options.digitGroupingSymbol ||
+        numeralConstants.defaultDigitGroupingSymbol.symbol;
 
     if (str.indexOf(digitGroupingSymbol) >= 0) {
         str = removeAll(str, digitGroupingSymbol);
@@ -108,7 +123,7 @@ export function parseAmount(str, options) {
     if (decimalSeparatorPos < 0) {
         return sign * parseInt(str) * 100;
     } else if (decimalSeparatorPos === 0) {
-        str = '0' + str;
+        str = "0" + str;
         decimalSeparatorPos++;
     }
 
@@ -122,11 +137,15 @@ export function parseAmount(str, options) {
     } else if (decimals.length === 2) {
         return sign * parseInt(integer) * 100 + sign * parseInt(decimals);
     } else {
-        return sign * parseInt(integer) * 100 + sign * parseInt(decimals.substring(0, 2));
+        return (
+            sign * parseInt(integer) * 100 +
+            sign * parseInt(decimals.substring(0, 2))
+        );
     }
 }
 
 export function formatAmount(value, options) {
+    const enableThousandsSeparator = false;
     if (isNumber(value)) {
         value = value.toString();
     }
@@ -139,16 +158,18 @@ export function formatAmount(value, options) {
         options = {};
     }
 
-    const negative = value.charAt(0) === '-';
+    const negative = value.charAt(0) === "-";
 
     if (negative) {
         value = value.substring(1);
     }
 
-    const decimalSeparator = options.decimalSeparator || numeralConstants.defaultDecimalSeparator.symbol;
+    const decimalSeparator =
+        options.decimalSeparator ||
+        numeralConstants.defaultDecimalSeparator.symbol;
 
-    let integer = '0';
-    let decimals = '00';
+    let integer = "0";
+    let decimals = "00";
 
     if (value.length > 2) {
         integer = value.substring(0, value.length - 2);
@@ -156,20 +177,20 @@ export function formatAmount(value, options) {
     } else if (value.length === 2) {
         decimals = value;
     } else if (value.length === 1) {
-        decimals = '0' + value;
+        decimals = "0" + value;
     }
 
     if (options.trimTailZero) {
-        if (decimals.charAt(0) === '0' && decimals.charAt(1) === '0') {
-            decimals = '';
-        } else if (decimals.charAt(0) !== '0' && decimals.charAt(1) === '0') {
+        if (decimals.charAt(0) === "0" && decimals.charAt(1) === "0") {
+            decimals = "";
+        } else if (decimals.charAt(0) !== "0" && decimals.charAt(1) === "0") {
             decimals = decimals.charAt(0);
         }
     }
 
     integer = appendDigitGroupingSymbol(integer, options);
 
-    if (decimals !== '') {
+    if (decimals !== "" && enableThousandsSeparator) {
         value = `${integer}${decimalSeparator}${decimals}`;
     } else {
         value = integer;
@@ -187,11 +208,11 @@ export function formatPercent(value, precision, lowPrecisionValue) {
     const normalizedValue = Math.floor(value * ratio);
 
     if (value > 0 && normalizedValue < 1 && lowPrecisionValue) {
-        return lowPrecisionValue + '%';
+        return lowPrecisionValue + "%";
     }
 
     const result = normalizedValue / ratio;
-    return result + '%';
+    return result + "%";
 }
 
 export function formatExchangeRateAmount(exchangeRateAmount, options) {
@@ -208,20 +229,40 @@ export function formatExchangeRateAmount(exchangeRateAmount, options) {
         let firstNonZeroPos = 0;
 
         for (let i = 0; i < rateStr.length; i++) {
-            if (rateStr.charAt(i) !== decimalSeparator && rateStr.charAt(i) !== '0') {
+            if (
+                rateStr.charAt(i) !== decimalSeparator &&
+                rateStr.charAt(i) !== "0"
+            ) {
                 firstNonZeroPos = Math.min(i + 4, rateStr.length);
                 break;
             }
         }
 
-        const trimmedRateStr = rateStr.substring(0, Math.max(6, Math.max(firstNonZeroPos, rateStr.indexOf(decimalSeparator) + 2)));
+        const trimmedRateStr = rateStr.substring(
+            0,
+            Math.max(
+                6,
+                Math.max(firstNonZeroPos, rateStr.indexOf(decimalSeparator) + 2)
+            )
+        );
         return appendDigitGroupingSymbol(trimmedRateStr, options);
     }
 }
 
-export function getAdaptiveDisplayAmountRate(amount1, amount2, fromExchangeRate, toExchangeRate, options) {
+export function getAdaptiveDisplayAmountRate(
+    amount1,
+    amount2,
+    fromExchangeRate,
+    toExchangeRate,
+    options
+) {
     if (!amount1 || !amount2 || amount1 === amount2) {
-        if (!fromExchangeRate || !fromExchangeRate.rate || !toExchangeRate || !toExchangeRate.rate) {
+        if (
+            !fromExchangeRate ||
+            !fromExchangeRate.rate ||
+            !toExchangeRate ||
+            !toExchangeRate.rate
+        ) {
             return null;
         }
 
@@ -253,14 +294,22 @@ export function getExchangedAmount(amount, fromRate, toRate) {
     return amount * exchangeRate;
 }
 
-export function getConvertedAmount(baseAmount, fromExchangeRate, toExchangeRate) {
+export function getConvertedAmount(
+    baseAmount,
+    fromExchangeRate,
+    toExchangeRate
+) {
     if (!fromExchangeRate || !toExchangeRate) {
-        return '';
+        return "";
     }
 
-    if (baseAmount === '') {
+    if (baseAmount === "") {
         return 0;
     }
 
-    return getExchangedAmount(baseAmount, fromExchangeRate.rate, toExchangeRate.rate);
+    return getExchangedAmount(
+        baseAmount,
+        fromExchangeRate.rate,
+        toExchangeRate.rate
+    );
 }
