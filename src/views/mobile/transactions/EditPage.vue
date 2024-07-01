@@ -11,12 +11,15 @@
             <f7-subnavbar>
                 <f7-segmented strong :class="{ 'readonly': mode !== 'add' }">
                     <f7-button :text="$t('Expense')" :active="transaction.type === allTransactionTypes.Expense"
+                               :disabled="mode !== 'add' && transaction.type !== allTransactionTypes.Expense"
                                v-if="transaction.type !== allTransactionTypes.ModifyBalance"
                                @click="transaction.type = allTransactionTypes.Expense"></f7-button>
                     <f7-button :text="$t('Income')" :active="transaction.type === allTransactionTypes.Income"
+                               :disabled="mode !== 'add' && transaction.type !== allTransactionTypes.Income"
                                v-if="transaction.type !== allTransactionTypes.ModifyBalance"
                                @click="transaction.type = allTransactionTypes.Income"></f7-button>
                     <f7-button :text="$t('Transfer')" :active="transaction.type === allTransactionTypes.Transfer"
+                               :disabled="mode !== 'add' && transaction.type !== allTransactionTypes.Transfer"
                                v-if="transaction.type !== allTransactionTypes.ModifyBalance"
                                @click="transaction.type = allTransactionTypes.Transfer"></f7-button>
                     <f7-button :text="$t('Modify Balance')" :active="transaction.type === allTransactionTypes.ModifyBalance"
@@ -365,9 +368,6 @@ import {
     getActualUnixTimeForStore
 } from '@/lib/datetime.js';
 import {
-    getAdaptiveDisplayAmountRate
-} from '@/lib/currency.js';
-import {
     getTransactionPrimaryCategoryName,
     getTransactionSecondaryCategoryName,
     getFirstAvailableCategoryId
@@ -455,7 +455,7 @@ export default {
 
             const fromExchangeRate = this.exchangeRatesStore.latestExchangeRateMap[sourceAccount.currency];
             const toExchangeRate = this.exchangeRatesStore.latestExchangeRateMap[destinationAccount.currency];
-            const amountRate = getAdaptiveDisplayAmountRate(this.transaction.sourceAmount, this.transaction.destinationAmount, fromExchangeRate, toExchangeRate, this.settingsStore.appSettings.thousandsSeparator);
+            const amountRate = this.$locale.getAdaptiveAmountRate(this.userStore, this.transaction.sourceAmount, this.transaction.destinationAmount, fromExchangeRate, toExchangeRate);
 
             if (!amountRate) {
                 return this.$t('Transfer In Amount');
@@ -491,11 +491,7 @@ export default {
             return this.accountsStore.allAccountsMap;
         },
         categorizedAccounts() {
-            return this.$locale.getCategorizedAccountsWithDisplayBalance(this.exchangeRatesStore, this.allVisibleAccounts, this.showAccountBalance, this.defaultCurrency, {
-                currencyDisplayMode: this.settingsStore.appSettings.currencyDisplayMode,
-                enableThousandsSeparator: this.settingsStore.appSettings.thousandsSeparator,
-                enableDecimalPoint: this.settingsStore.appSettings.decimalPoint,
-            });
+            return this.$locale.getCategorizedAccountsWithDisplayBalance(this.allVisibleAccounts, this.showAccountBalance, this.defaultCurrency, this.settingsStore, this.userStore, this.exchangeRatesStore);
         },
         allCategories() {
             return this.transactionCategoriesStore.allTransactionCategories;
@@ -563,8 +559,8 @@ export default {
         sourceAmountClass() {
             const classes = {
                 'readonly': this.mode === 'view',
-                'text-color-red': this.transaction.type === this.allTransactionTypes.Expense,
-                'text-color-teal': this.transaction.type === this.allTransactionTypes.Income,
+                'text-color-teal': this.transaction.type === this.allTransactionTypes.Expense,
+                'text-color-red': this.transaction.type === this.allTransactionTypes.Income,
                 'text-color-primary': this.transaction.type === this.allTransactionTypes.Transfer
             };
 
@@ -591,10 +587,10 @@ export default {
             }
         },
         allowedMinAmount() {
-            return transactionConstants.minAmount;
+            return transactionConstants.minAmountNumber;
         },
         allowedMaxAmount() {
-            return transactionConstants.maxAmount;
+            return transactionConstants.maxAmountNumber;
         },
         showAccountBalance() {
             return this.settingsStore.appSettings.showAccountBalance;
@@ -685,8 +681,7 @@ export default {
                 {
                     type: query.type,
                     categoryId: query.categoryId,
-                    accountId: query.accountId,
-                    amount: query.amount
+                    accountId: query.accountId
                 },
                 (self.mode === 'edit' || self.mode === 'view'),
                 (self.mode === 'edit' || self.mode === 'view')
@@ -832,12 +827,8 @@ export default {
 
             return this.getDisplayCurrency(amount);
         },
-        getDisplayCurrency(value, currencyCode) {
-            return this.$locale.getDisplayCurrency(value, currencyCode, {
-                currencyDisplayMode: this.settingsStore.appSettings.currencyDisplayMode,
-                enableThousandsSeparator: this.settingsStore.appSettings.thousandsSeparator,
-                enableDecimalPoint: this.settingsStore.appSettings.decimalPoint,
-            });
+        getDisplayCurrency(value) {
+            return this.$locale.formatAmountWithCurrency(this.settingsStore, this.userStore, value, false);
         },
         getPrimaryCategoryName(categoryId, allCategories) {
             return getTransactionPrimaryCategoryName(categoryId, allCategories);

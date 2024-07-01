@@ -277,11 +277,7 @@ export default {
             }
         },
         getDisplayCurrency(value, currencyCode) {
-            return this.$locale.getDisplayCurrency(value, currencyCode, {
-                currencyDisplayMode: this.settingsStore.appSettings.currencyDisplayMode,
-                enableThousandsSeparator: this.settingsStore.appSettings.thousandsSeparator,
-                enableDecimalPoint: this.settingsStore.appSettings.decimalPoint,
-            });
+            return this.$locale.formatAmountWithCurrency(this.settingsStore, this.userStore, value, currencyCode);
         },
         getDisplayAmount(amount, incomplete) {
             if (!this.showAmountInHomePage) {

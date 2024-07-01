@@ -192,7 +192,56 @@
                                                     </v-list>
                                                 </v-menu>
                                             </th>
-                                            <th class="transaction-table-column-amount">{{ $t('Amount') }}</th>
+                                            <th class="transaction-table-column-amount">
+                                                <v-menu ref="amountFilterMenu" class="transaction-amount-menu"
+                                                        eager location="bottom" max-height="500"
+                                                        :close-on-content-click="false"
+                                                        v-model="amountMenuState"
+                                                        @update:model-value="scrollAmountMenuToSelectedItem">
+                                                    <template #activator="{ props }">
+                                                        <div class="d-flex align-center cursor-pointer"
+                                                             :class="{ 'readonly': loading, 'text-primary': query.amountFilter }" v-bind="props">
+                                                            <span>{{ $t('Amount') }}</span>
+                                                            <v-icon :icon="icons.dropdownMenu" />
+                                                        </div>
+                                                    </template>
+                                                    <v-list :selected="[query.amountFilter.split(':')[0]]">
+                                                        <v-list-item key="0" value="0" class="text-sm" density="compact"
+                                                                     :class="{ 'list-item-selected': !query.amountFilter }"
+                                                                     :append-icon="(!query.amountFilter && !currentAmountFilterType ? icons.check : null)">
+                                                            <v-list-item-title class="cursor-pointer"
+                                                                               @click="changeAmountFilter('')">
+                                                                <div class="d-flex align-center">
+                                                                    <span class="text-sm ml-3">{{ $t('All') }}</span>
+                                                                </div>
+                                                            </v-list-item-title>
+                                                        </v-list-item>
+                                                        <template :key="filterType.type"
+                                                                  v-for="filterType in allAmountFilterTypes">
+                                                            <v-list-item class="text-sm" density="compact"
+                                                                         :value="filterType.type"
+                                                                         :class="{ 'list-item-selected': query.amountFilter && query.amountFilter.startsWith(`${filterType.type}:`) }"
+                                                                         :append-icon="(query.amountFilter && query.amountFilter.startsWith(`${filterType.type}:`) && currentAmountFilterType !== filterType.type ? icons.check : null)">
+                                                                <v-list-item-title class="cursor-pointer"
+                                                                                   @click="currentAmountFilterType = filterType.type">
+                                                                    <div class="d-flex align-center">
+                                                                        <span class="text-sm ml-3">{{ $t(filterType.name) }}</span>
+                                                                        <span class="text-sm ml-4" v-if="query.amountFilter && query.amountFilter.startsWith(`${filterType.type}:`) && currentAmountFilterType !== filterType.type">{{ queryAmount }}</span>
+                                                                        <amount-input class="transaction-amount-filter-value ml-4" density="compact" v-model="currentAmountFilterValue1"
+                                                                                      v-if="currentAmountFilterType === filterType.type"/>
+                                                                        <span class="ml-2 mr-2" v-if="currentAmountFilterType === filterType.type && filterType.paramCount === 2">~</span>
+                                                                        <amount-input class="transaction-amount-filter-value" density="compact" v-model="currentAmountFilterValue2"
+                                                                                      v-if="currentAmountFilterType === filterType.type && filterType.paramCount === 2"/>
+                                                                        <v-btn class="ml-2" density="compact" color="primary" variant="tonal"
+                                                                               @click="changeAmountFilter(filterType.type)"
+                                                                               v-if="currentAmountFilterType === filterType.type">{{ $t('Apply') }}</v-btn>
+                                                                    </div>
+                                                                </v-list-item-title>
+                                                            </v-list-item>
+                                                        </template>
+                                                    </v-list>
+                                                </v-menu>
+                                            </th>
                                             <th class="transaction-table-column-account">
                                                 <v-menu ref="accountFilterMenu" class="transaction-account-menu"
                                                         eager location="bottom" max-height="500"
@@ -353,11 +402,13 @@ import { useAccountsStore } from '@/stores/account.js';
 import { useTransactionCategoriesStore } from '@/stores/transactionCategory.js';
 import { useTransactionsStore } from '@/stores/transaction.js';
 
+import numeralConstants from '@/consts/numeral.js';
 import datetimeConstants from '@/consts/datetime.js';
 import currencyConstants from '@/consts/currency.js';
 import accountConstants from '@/consts/account.js';
 import transactionConstants from '@/consts/transaction.js';
-import { getNameByKeyValue } from '@/lib/common.js';
+import { isString, getNameByKeyValue } from '@/lib/common.js';
+import logger from '@/lib/logger.js';
 import {
     getCurrentUnixTime,
     parseDateFromUnixTime,
@@ -405,7 +456,9 @@ export default {
         'initMinTime',
         'initType',
         'initCategoryId',
-        'initAccountId'
+        'initAccountId',
+        'initAmountFilter',
+        'initKeyword'
     ],
     data() {
         const { mdAndUp } = useDisplay();
@@ -420,8 +473,12 @@ export default {
             searchKeyword: '',
             customMinDatetime: 0,
             customMaxDatetime: 0,
+            currentAmountFilterType: '',
+            currentAmountFilterValue1: '0',
+            currentAmountFilterValue2: '0',
             currentPageTransactions: [],
             categoryMenuState: false,
+            amountMenuState: false,
             alwaysShowNav: mdAndUp.value,
             showNav: mdAndUp.value,
             showCustomDateRangeDialog: false,
@@ -495,6 +552,25 @@ export default {
         },
         queryAccountName() {
             return getNameByKeyValue(this.allAccounts, this.query.accountId, null, 'name', this.$t('Account'));
+        },
+        queryAmount() {
+            if (!this.query.amountFilter) {
+                return '';
+            }
+
+            const amountFilterItems = this.query.amountFilter.split(':');
+
+            if (amountFilterItems.length < 2) {
+                return '';
+            }
+
+            const displayAmount = [];
+
+            for (let i = 1; i < amountFilterItems.length; i++) {
+                displayAmount.push(this.getDisplayCurrency(amountFilterItems[i], false));
+            }
+
+            return displayAmount.join(' ~ ');
         },
         queryMonthlyData() {
             return isDateRangeMatchOneMonth(this.query.minTime, this.query.maxTime);
@@ -596,6 +672,9 @@ export default {
                 return null;
             }
         },
+        allAmountFilterTypes() {
+            return numeralConstants.allAmountFilterTypeArray;
+        },
         allTransactionTypes() {
             return transactionConstants.allTransactionTypes;
         },
@@ -636,7 +715,9 @@ export default {
             maxTime: this.initMaxTime,
             type: this.initType,
             categoryId: this.initCategoryId,
-            accountId: this.initAccountId
+            accountId: this.initAccountId,
+            amountFilter: this.initAmountFilter,
+            keyword: this.initKeyword
         });
     },
     setup() {
@@ -663,7 +744,9 @@ export default {
                 maxTime: to.query.maxTime,
                 type: to.query.type,
                 categoryId: to.query.categoryId,
-                accountId: to.query.accountId
+                accountId: to.query.accountId,
+                amountFilter: to.query.amountFilter,
+                keyword: to.query.keyword
             });
         }
     },
@@ -688,8 +771,12 @@ export default {
                 type: parseInt(query.type) > 0 ? parseInt(query.type) : undefined,
                 categoryId: query.categoryId,
                 accountId: query.accountId,
-                keyword: this.searchKeyword
+                amountFilter: query.amountFilter || '',
+                keyword: query.keyword || ''
             });
+
+            this.searchKeyword = query.keyword || '';
+            this.currentAmountFilterType = '';
 
             this.currentPage = 1;
             this.reload(false);
@@ -850,6 +937,50 @@ export default {
             this.transactionsStore.clearTransactions();
             this.$router.push(this.getFilterLinkUrl());
         },
+        changeAmountFilter(filterType) {
+            this.currentAmountFilterType = '';
+            this.amountMenuState = false;
+
+            if (this.query.amountFilter === filterType) {
+                return;
+            }
+
+            let amountFilter = filterType;
+
+            if (filterType) {
+                const amountCount = this.getAmountFilterParameterCount(filterType);
+
+                if (!amountCount) {
+                    return;
+                }
+
+                if (amountCount === 1) {
+                    amountFilter += ':' + this.currentAmountFilterValue1;
+                } else if (amountCount === 2) {
+                    if (this.currentAmountFilterValue2 < this.currentAmountFilterValue1) {
+                        this.$refs.snackbar.showMessage('Incorrect amount range');
+                        return;
+                    }
+
+                    amountFilter += ':' + this.currentAmountFilterValue1 + ':' + this.currentAmountFilterValue2;
+                } else {
+                    return;
+                }
+            }
+
+            if (this.query.amountFilter === amountFilter) {
+                return;
+            }
+
+            this.transactionsStore.updateTransactionListFilter({
+                amountFilter: amountFilter
+            });
+
+            this.loading = true;
+            this.currentPageTransactions = [];
+            this.transactionsStore.clearTransactions();
+            this.$router.push(this.getFilterLinkUrl());
+        },
         changeAccountFilter(accountId) {
             if (this.query.accountId === accountId) {
                 return;
@@ -874,7 +1005,9 @@ export default {
             });
 
             this.currentPage = 1;
-            this.reload(false);
+            this.currentPageTransactions = [];
+            this.transactionsStore.clearTransactions();
+            this.$router.push(this.getFilterLinkUrl());
         },
         add() {
             const self = this;
@@ -922,6 +1055,34 @@ export default {
                 this.scrollMenuToSelectedItem(this.$refs.categoryFilterMenu);
             }
         },
+        scrollAmountMenuToSelectedItem(opened) {
+            if (opened) {
+                this.currentAmountFilterType = '';
+
+                let amount1 = 0, amount2 = 0;
+
+                if (isString(this.query.amountFilter)) {
+                    try {
+                        const filterItems = this.query.amountFilter.split(':');
+                        const amountCount = this.getAmountFilterParameterCount(filterItems[0]);
+
+                        if (filterItems.length === 2 && amountCount === 1) {
+                            amount1 = parseInt(filterItems[1]);
+                        } else if (filterItems.length === 3 && amountCount === 2) {
+                            amount1 = parseInt(filterItems[1]);
+                            amount2 = parseInt(filterItems[2]);
+                        }
+                    } catch (ex) {
+                        logger.warn('cannot parse amount from filter value, original value is ' + this.query.amountFilter);
+                    }
+                }
+
+                this.currentAmountFilterValue1 = amount1;
+                this.currentAmountFilterValue2 = amount2;
+
+                this.scrollMenuToSelectedItem(this.$refs.amountFilterMenu);
+            }
+        },
         scrollAccountMenuToSelectedItem(opened) {
             if (opened) {
                 this.scrollMenuToSelectedItem(this.$refs.accountFilterMenu);
@@ -953,11 +1114,7 @@ export default {
             return symbol + displayAmount + (incomplete ? '+' : '');
         },
         getDisplayCurrency(value, currencyCode) {
-            return this.$locale.getDisplayCurrency(value, currencyCode, {
-                currencyDisplayMode: this.settingsStore.appSettings.currencyDisplayMode,
-                                enableThousandsSeparator: this.settingsStore.appSettings.thousandsSeparator,
-                enableDecimalPoint: this.settingsStore.appSettings.decimalPoint,
-            });
+            return this.$locale.formatAmountWithCurrency(this.settingsStore, this.userStore, value, currencyCode);
         },
         getLongDate(transaction) {
             const transactionTime = getUnixTime(parseDateFromUnixTime(transaction.time, transaction.utcOffset, this.currentTimezoneOffsetMinutes));
@@ -1001,6 +1158,10 @@ export default {
             }
 
             return [];
+        },
+        getAmountFilterParameterCount(filterType) {
+            const amountFilterType = numeralConstants.allAmountFilterTypeMap[filterType];
+            return amountFilterType ? amountFilterType.paramCount : 0;
         },
         getFilterLinkUrl() {
             return `/transaction/list?${this.transactionsStore.getTransactionListPageParams()}`;
@@ -1068,9 +1229,19 @@ export default {
 }
 
 .transaction-category-menu .item-icon,
+.transaction-amount-menu .item-icon,
 .transaction-account-menu .item-icon,
 .transaction-table .item-icon {
     padding-bottom: 3px;
+}
+
+.transaction-amount-filter-value {
+    width: 100px;
+}
+
+.transaction-amount-filter-value input.v-field__input {
+    min-height: 32px !important;
+    padding: 0 8px 0 8px;
 }
 
 .transaction-category-menu .has-children-item-selected span {

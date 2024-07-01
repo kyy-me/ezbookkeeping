@@ -1,4 +1,3 @@
-import currencyConstants from '@/consts/currency.js';
 import timezoneConstants from '@/consts/timezone.js';
 import statisticsConstants from '@/consts/statistics.js';
 
@@ -13,8 +12,6 @@ const defaultSettings = {
     applicationLockWebAuthn: false,
     autoUpdateExchangeRatesData: true,
     autoGetCurrentGeoLocation: false,
-    thousandsSeparator: true,
-    currencyDisplayMode: currencyConstants.defaultCurrencyDisplayMode,
     showAmountInHomePage: true,
     timezoneUsedForStatisticsInHomePage: timezoneConstants.defaultTimezoneTypesUsedForStatistics,
     itemsCountInTransactionListPage: 15,
@@ -167,22 +164,6 @@ export function isAutoGetCurrentGeoLocation() {
 
 export function setAutoGetCurrentGeoLocation(value) {
     setOption('autoGetCurrentGeoLocation', value);
-}
-
-export function isEnableThousandsSeparator() {
-    return getOption('thousandsSeparator');
-}
-
-export function setEnableThousandsSeparator(value) {
-    setOption('thousandsSeparator', value);
-}
-
-export function getCurrencyDisplayMode() {
-    return getOption('currencyDisplayMode');
-}
-
-export function setCurrencyDisplayMode(value) {
-    setOption('currencyDisplayMode', value);
 }
 
 export function isShowAmountInHomePage() {

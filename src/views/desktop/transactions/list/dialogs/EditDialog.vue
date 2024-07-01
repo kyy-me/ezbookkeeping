@@ -40,13 +40,13 @@
                 <div class="mb-4">
                     <v-tabs class="v-tabs-pill" direction="vertical" :class="{ 'readonly': mode !== 'add' }"
                             :disabled="loading || submitting" v-model="transaction.type">
-                        <v-tab :value="allTransactionTypes.Expense" v-if="transaction.type !== allTransactionTypes.ModifyBalance">
+                        <v-tab :value="allTransactionTypes.Expense" :disabled="mode !== 'add' && transaction.type !== allTransactionTypes.Expense" v-if="transaction.type !== allTransactionTypes.ModifyBalance">
                             <span>{{ $t('Expense') }}</span>
                         </v-tab>
-                        <v-tab :value="allTransactionTypes.Income" v-if="transaction.type !== allTransactionTypes.ModifyBalance">
+                        <v-tab :value="allTransactionTypes.Income" :disabled="mode !== 'add' && transaction.type !== allTransactionTypes.Income" v-if="transaction.type !== allTransactionTypes.ModifyBalance">
                             <span>{{ $t('Income') }}</span>
                         </v-tab>
-                        <v-tab :value="allTransactionTypes.Transfer" v-if="transaction.type !== allTransactionTypes.ModifyBalance">
+                        <v-tab :value="allTransactionTypes.Transfer" :disabled="mode !== 'add' && transaction.type !== allTransactionTypes.Transfer" v-if="transaction.type !== allTransactionTypes.ModifyBalance">
                             <span>{{ $t('Transfer') }}</span>
                         </v-tab>
                         <v-tab :value="allTransactionTypes.ModifyBalance" v-if="transaction.type === allTransactionTypes.ModifyBalance">
@@ -339,9 +339,6 @@ import {
     getCurrentUnixTime
 } from '@/lib/datetime.js';
 import {
-    getAdaptiveDisplayAmountRate
-} from '@/lib/currency.js';
-import {
     getFirstAvailableCategoryId
 } from '@/lib/category.js';
 import { setTransactionModelByTransaction } from '@/lib/transaction.js';
@@ -445,7 +442,7 @@ export default {
 
             const fromExchangeRate = this.exchangeRatesStore.latestExchangeRateMap[sourceAccount.currency];
             const toExchangeRate = this.exchangeRatesStore.latestExchangeRateMap[destinationAccount.currency];
-            const amountRate = getAdaptiveDisplayAmountRate(this.transaction.sourceAmount, this.transaction.destinationAmount, fromExchangeRate, toExchangeRate, this.settingsStore.appSettings.thousandsSeparator);
+            const amountRate = this.$locale.getAdaptiveAmountRate(this.userStore, this.transaction.sourceAmount, this.transaction.destinationAmount, fromExchangeRate, toExchangeRate);
 
             if (!amountRate) {
                 return this.$t('Transfer In Amount');
@@ -475,11 +472,7 @@ export default {
             return this.accountsStore.allVisiblePlainAccounts;
         },
         categorizedAccounts() {
-            return this.$locale.getCategorizedAccountsWithDisplayBalance(this.exchangeRatesStore, this.allVisibleAccounts, this.showAccountBalance, this.defaultCurrency, {
-                currencyDisplayMode: this.settingsStore.appSettings.currencyDisplayMode,
-                enableThousandsSeparator: this.settingsStore.appSettings.thousandsSeparator,
-                enableDecimalPoint: this.settingsStore.appSettings.decimalPoint,
-            });
+            return this.$locale.getCategorizedAccountsWithDisplayBalance(this.allVisibleAccounts, this.showAccountBalance, this.defaultCurrency, this.settingsStore, this.userStore, this.exchangeRatesStore);
         },
         allAccountsMap() {
             return this.accountsStore.allAccountsMap;
@@ -612,6 +605,7 @@ export default {
             self.activeTab = 'basicInfo';
             self.loading = true;
             self.submitting = false;
+            self.geoLocationStatus = null;
             self.originalTransactionEditable = false;
 
             const newTransaction = self.transactionsStore.generateNewTransactionModel(options.type);

@@ -25,9 +25,6 @@ import {
     getDay,
     getDayOfWeekName
 } from '@/lib/datetime.js';
-import {
-    stringCurrencyToNumeric
-} from '@/lib/currency.js';
 
 const emptyTransactionResult = {
     items: [],
@@ -273,6 +270,7 @@ export const useTransactionsStore = defineStore('transactions', {
             type: 0,
             categoryId: '0',
             accountId: '0',
+            amountFilter: '',
             keyword: ''
         },
         transactions: [],
@@ -353,8 +351,7 @@ export const useTransactionsStore = defineStore('transactions', {
                 }
 
                 if ((!sourceAccount || !destinationAccount || transaction.destinationAmount === oldValue || transaction.destinationAmount === 0) &&
-                    (stringCurrencyToNumeric(transactionConstants.minAmount) <= newValue &&
-                        newValue <= stringCurrencyToNumeric(transactionConstants.maxAmount))) {
+                    (transactionConstants.minAmountNumber <= newValue && newValue <= transactionConstants.maxAmountNumber)) {
                     transaction.destinationAmount = newValue;
                 }
             }
@@ -369,6 +366,7 @@ export const useTransactionsStore = defineStore('transactions', {
             this.transactionsFilter.type = 0;
             this.transactionsFilter.categoryId = '0';
             this.transactionsFilter.accountId = '0';
+            this.transactionsFilter.amountFilter = '';
             this.transactionsFilter.keyword = '';
             this.transactions = [];
             this.transactionsNextTimeId = 0;
@@ -416,6 +414,12 @@ export const useTransactionsStore = defineStore('transactions', {
                 this.transactionsFilter.accountId = '0';
             }
 
+            if (filter && isString(filter.amountFilter)) {
+                this.transactionsFilter.amountFilter = filter.amountFilter;
+            } else {
+                this.transactionsFilter.amountFilter = '';
+            }
+
             if (filter && isString(filter.keyword)) {
                 this.transactionsFilter.keyword = filter.keyword;
             } else {
@@ -447,6 +451,10 @@ export const useTransactionsStore = defineStore('transactions', {
                 this.transactionsFilter.accountId = filter.accountId;
             }
 
+            if (filter && isString(filter.amountFilter)) {
+                this.transactionsFilter.amountFilter = filter.amountFilter;
+            }
+
             if (filter && isString(filter.keyword)) {
                 this.transactionsFilter.keyword = filter.keyword;
             }
@@ -473,6 +481,14 @@ export const useTransactionsStore = defineStore('transactions', {
                 querys.push('minTime=' + this.transactionsFilter.minTime);
             }
 
+            if (this.transactionsFilter.amountFilter) {
+                querys.push('amountFilter=' + encodeURIComponent(this.transactionsFilter.amountFilter));
+            }
+
+            if (this.transactionsFilter.keyword) {
+                querys.push('keyword=' + encodeURIComponent(this.transactionsFilter.keyword));
+            }
+
             return querys.join('&');
         },
         loadTransactions({ reload, count, page, withCount, autoExpand, defaultCurrency }) {
@@ -497,6 +513,7 @@ export const useTransactionsStore = defineStore('transactions', {
                     type: self.transactionsFilter.type,
                     categoryId: self.transactionsFilter.categoryId,
                     accountId: self.transactionsFilter.accountId,
+                    amountFilter: self.transactionsFilter.amountFilter,
                     keyword: self.transactionsFilter.keyword
                 }).then(response => {
                     const data = response.data;
@@ -571,6 +588,7 @@ export const useTransactionsStore = defineStore('transactions', {
                     type: self.transactionsFilter.type,
                     categoryId: self.transactionsFilter.categoryId,
                     accountId: self.transactionsFilter.accountId,
+                    amountFilter: self.transactionsFilter.amountFilter,
                     keyword: self.transactionsFilter.keyword
                 }).then(response => {
                     const data = response.data;

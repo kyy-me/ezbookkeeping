@@ -204,6 +204,60 @@
                                 />
                             </v-col>
                         </v-row>
+
+                        <v-row>
+                            <v-col cols="12" md="6">
+                                <v-select
+                                    item-title="displayName"
+                                    item-value="type"
+                                    persistent-placeholder
+                                    :disabled="loading || saving"
+                                    :label="$t('Decimal Separator')"
+                                    :placeholder="$t('Decimal Separator')"
+                                    :items="allDecimalSeparators"
+                                    v-model="newProfile.decimalSeparator"
+                                />
+                            </v-col>
+
+                            <v-col cols="12" md="6">
+                                <v-select
+                                    item-title="displayName"
+                                    item-value="type"
+                                    persistent-placeholder
+                                    :disabled="loading || saving"
+                                    :label="$t('Digit Grouping Symbol')"
+                                    :placeholder="$t('Digit Grouping Symbol')"
+                                    :items="allDigitGroupingSymbols"
+                                    v-model="newProfile.digitGroupingSymbol"
+                                />
+                            </v-col>
+
+                            <v-col cols="12" md="6">
+                                <v-select
+                                    item-title="displayName"
+                                    item-value="type"
+                                    persistent-placeholder
+                                    :disabled="loading || saving"
+                                    :label="$t('Digit Grouping')"
+                                    :placeholder="$t('Digit Grouping')"
+                                    :items="allDigitGroupingTypes"
+                                    v-model="newProfile.digitGrouping"
+                                />
+                            </v-col>
+
+                            <v-col cols="12" md="6">
+                                <v-select
+                                    item-title="displayName"
+                                    item-value="type"
+                                    persistent-placeholder
+                                    :disabled="loading || saving"
+                                    :label="$t('Currency Display Mode')"
+                                    :placeholder="$t('Currency Display Mode')"
+                                    :items="allCurrencyDisplayTypes"
+                                    v-model="newProfile.currencyDisplayType"
+                                />
+                            </v-col>
+                        </v-row>
                     </v-card-text>
 
                     <v-card-text class="d-flex flex-wrap gap-4">
@@ -259,7 +313,11 @@ export default {
                 longDateFormat: 0,
                 shortDateFormat: 0,
                 longTimeFormat: 0,
-                shortTimeFormat: 0
+                shortTimeFormat: 0,
+                decimalSeparator: 0,
+                digitGroupingSymbol: 0,
+                digitGrouping: 0,
+                currencyDisplayType: 0
             },
             oldProfile: {
                 email: '',
@@ -272,7 +330,11 @@ export default {
                 longDateFormat: 0,
                 shortDateFormat: 0,
                 longTimeFormat: 0,
-                shortTimeFormat: 0
+                shortTimeFormat: 0,
+                decimalSeparator: 0,
+                digitGroupingSymbol: 0,
+                digitGrouping: 0,
+                currencyDisplayType: 0
             },
             emailVerified: false,
             loading: true,
@@ -315,6 +377,18 @@ export default {
         allShortTimeFormats() {
             return this.$locale.getAllShortTimeFormats();
         },
+        allDecimalSeparators() {
+            return this.$locale.getAllDecimalSeparators();
+        },
+        allDigitGroupingSymbols() {
+            return this.$locale.getAllDigitGroupingSymbols();
+        },
+        allDigitGroupingTypes() {
+            return this.$locale.getAllDigitGroupingTypes();
+        },
+        allCurrencyDisplayTypes() {
+            return this.$locale.getAllCurrencyDisplayTypes(this.settingsStore, this.userStore);
+        },
         allTransactionEditScopeTypes() {
             return this.$locale.getAllTransactionEditScopeTypes();
         },
@@ -346,7 +420,11 @@ export default {
                 this.newProfile.longDateFormat === this.oldProfile.longDateFormat &&
                 this.newProfile.shortDateFormat === this.oldProfile.shortDateFormat &&
                 this.newProfile.longTimeFormat === this.oldProfile.longTimeFormat &&
-                this.newProfile.shortTimeFormat === this.oldProfile.shortTimeFormat) {
+                this.newProfile.shortTimeFormat === this.oldProfile.shortTimeFormat &&
+                this.newProfile.decimalSeparator === this.oldProfile.decimalSeparator &&
+                this.newProfile.digitGroupingSymbol === this.oldProfile.digitGroupingSymbol &&
+                this.newProfile.digitGrouping === this.oldProfile.digitGrouping &&
+                this.newProfile.currencyDisplayType === this.oldProfile.currencyDisplayType) {
                 return 'Nothing has been modified';
             } else {
                 return null;
@@ -473,6 +551,10 @@ export default {
             this.oldProfile.shortDateFormat = profile.shortDateFormat;
             this.oldProfile.longTimeFormat = profile.longTimeFormat;
             this.oldProfile.shortTimeFormat = profile.shortTimeFormat;
+            this.oldProfile.decimalSeparator = profile.decimalSeparator;
+            this.oldProfile.digitGroupingSymbol = profile.digitGroupingSymbol;
+            this.oldProfile.digitGrouping = profile.digitGrouping;
+            this.oldProfile.currencyDisplayType = profile.currencyDisplayType;
 
             this.newProfile.email = this.oldProfile.email
             this.newProfile.nickname = this.oldProfile.nickname;
@@ -485,6 +567,10 @@ export default {
             this.newProfile.shortDateFormat = this.oldProfile.shortDateFormat;
             this.newProfile.longTimeFormat = this.oldProfile.longTimeFormat;
             this.newProfile.shortTimeFormat = this.oldProfile.shortTimeFormat;
+            this.newProfile.decimalSeparator = this.oldProfile.decimalSeparator;
+            this.newProfile.digitGroupingSymbol = this.oldProfile.digitGroupingSymbol;
+            this.newProfile.digitGrouping = this.oldProfile.digitGrouping;
+            this.newProfile.currencyDisplayType = this.oldProfile.currencyDisplayType;
         }
     }
 };

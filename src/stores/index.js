@@ -380,7 +380,11 @@ export const useRootStore = defineStore('root', {
                     longDateFormat: profile.longDateFormat,
                     shortDateFormat: profile.shortDateFormat,
                     longTimeFormat: profile.longTimeFormat,
-                    shortTimeFormat: profile.shortTimeFormat
+                    shortTimeFormat: profile.shortTimeFormat,
+                    decimalSeparator: profile.decimalSeparator,
+                    digitGroupingSymbol: profile.digitGroupingSymbol,
+                    digitGrouping: profile.digitGrouping,
+                    currencyDisplayType: profile.currencyDisplayType
                 }).then(response => {
                     const data = response.data;
 

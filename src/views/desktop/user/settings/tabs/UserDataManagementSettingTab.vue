@@ -166,7 +166,7 @@ import { useRootStore } from '@/stores/index.js';
 import { useSettingsStore } from '@/stores/setting.js';
 import { useUserStore } from '@/stores/user.js';
 
-import {appendThousandsSeparator, isEquals} from '@/lib/common.js';
+import { isEquals } from '@/lib/common.js';
 import { isDataExportingEnabled } from '@/lib/server_settings.js';
 import { startDownloadFile } from '@/lib/ui.js';
 
@@ -204,9 +204,6 @@ export default {
     },
     computed: {
         ...mapStores(useRootStore, useSettingsStore, useUserStore),
-        isEnableThousandsSeparator() {
-            return this.settingsStore.appSettings.thousandsSeparator;
-        },
         displayDataStatistics() {
             const self = this;
 
@@ -215,10 +212,10 @@ export default {
             }
 
             return {
-                totalAccountCount: appendThousandsSeparator(self.dataStatistics.totalAccountCount, self.isEnableThousandsSeparator),
-                totalTransactionCategoryCount: appendThousandsSeparator(self.dataStatistics.totalTransactionCategoryCount, self.isEnableThousandsSeparator),
-                totalTransactionTagCount: appendThousandsSeparator(self.dataStatistics.totalTransactionTagCount, self.isEnableThousandsSeparator),
-                totalTransactionCount: appendThousandsSeparator(self.dataStatistics.totalTransactionCount, self.isEnableThousandsSeparator)
+                totalAccountCount: self.$locale.appendDigitGroupingSymbol(self.userStore, self.dataStatistics.totalAccountCount),
+                totalTransactionCategoryCount: self.$locale.appendDigitGroupingSymbol(self.userStore, self.dataStatistics.totalTransactionCategoryCount),
+                totalTransactionTagCount: self.$locale.appendDigitGroupingSymbol(self.userStore, self.dataStatistics.totalTransactionTagCount),
+                totalTransactionCount: self.$locale.appendDigitGroupingSymbol(self.userStore, self.dataStatistics.totalTransactionCount)
             };
         },
         isDataExportingEnabled() {

@@ -302,7 +302,8 @@ import { useStatisticsStore } from '@/stores/statistics.js';
 
 import datetimeConstants from '@/consts/datetime.js';
 import statisticsConstants from '@/consts/statistics.js';
-import { limitText, formatPercent } from '@/lib/common.js'
+import { limitText } from '@/lib/common.js'
+import { formatPercent } from '@/lib/numeral.js';
 import {
     getYearAndMonthFromUnixTime,
     getYearMonthFirstUnixTime,
@@ -826,11 +827,7 @@ export default {
             return amount;
         },
         getDisplayCurrency(value, currencyCode) {
-            return this.$locale.getDisplayCurrency(value, currencyCode, {
-                currencyDisplayMode: this.settingsStore.appSettings.currencyDisplayMode,
-                enableThousandsSeparator: this.settingsStore.appSettings.thousandsSeparator,
-                enableDecimalPoint: this.settingsStore.appSettings.decimalPoint,
-            });
+            return this.$locale.formatAmountWithCurrency(this.settingsStore, this.userStore, value, currencyCode);
         },
         getDisplayPercent(value, precision, lowPrecisionValue) {
             return formatPercent(value, precision, lowPrecisionValue);

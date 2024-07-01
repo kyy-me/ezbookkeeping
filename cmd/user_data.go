@@ -2,15 +2,15 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/kyy-me/ezbookkeeping/pkg/errs"
-	"github.com/kyy-me/ezbookkeeping/pkg/models"
 	"os"
 
 	"github.com/urfave/cli/v2"
 
-	clis "github.com/kyy-me/ezbookkeeping/pkg/cli"
-	"github.com/kyy-me/ezbookkeeping/pkg/log"
-	"github.com/kyy-me/ezbookkeeping/pkg/utils"
+	clis "github.com/mayswind/ezbookkeeping/pkg/cli"
+	"github.com/mayswind/ezbookkeeping/pkg/errs"
+	"github.com/mayswind/ezbookkeeping/pkg/log"
+	"github.com/mayswind/ezbookkeeping/pkg/models"
+	"github.com/mayswind/ezbookkeeping/pkg/utils"
 )
 
 // UserData represents the data command
@@ -618,6 +618,10 @@ func printUserInfo(user *models.User) {
 	fmt.Printf("[ShortDateFormat] %s (%d)\n", user.ShortDateFormat, user.ShortDateFormat)
 	fmt.Printf("[LongTimeFormat] %s (%d)\n", user.LongTimeFormat, user.LongTimeFormat)
 	fmt.Printf("[ShortTimeFormat] %s (%d)\n", user.ShortTimeFormat, user.ShortTimeFormat)
+	fmt.Printf("[DecimalSeparator] %s (%d)\n", user.DecimalSeparator, user.DecimalSeparator)
+	fmt.Printf("[DigitGroupingSymbol] %s (%d)\n", user.DigitGroupingSymbol, user.DigitGroupingSymbol)
+	fmt.Printf("[DigitGrouping] %s (%d)\n", user.DigitGrouping, user.DigitGrouping)
+	fmt.Printf("[CurrencyDisplayType] %s (%d)\n", user.CurrencyDisplayType, user.CurrencyDisplayType)
 	fmt.Printf("[Deleted] %t\n", user.Deleted)
 	fmt.Printf("[EmailVerified] %t\n", user.EmailVerified)
 	fmt.Printf("[CreatedAt] %s (%d)\n", utils.FormatUnixTimeToLongDateTimeInServerTimezone(user.CreatedUnixTime), user.CreatedUnixTime)

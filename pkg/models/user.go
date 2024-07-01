@@ -64,6 +64,10 @@ type User struct {
 	ShortDateFormat      ShortDateFormat      `xorm:"TINYINT"`
 	LongTimeFormat       LongTimeFormat       `xorm:"TINYINT"`
 	ShortTimeFormat      ShortTimeFormat      `xorm:"TINYINT"`
+	DecimalSeparator     DecimalSeparator     `xorm:"TINYINT"`
+	DigitGroupingSymbol  DigitGroupingSymbol  `xorm:"TINYINT"`
+	DigitGrouping        DigitGroupingType    `xorm:"TINYINT"`
+	CurrencyDisplayType  CurrencyDisplayType  `xorm:"TINYINT"`
 	Disabled             bool
 	Deleted              bool `xorm:"NOT NULL"`
 	EmailVerified        bool `xorm:"NOT NULL"`
@@ -89,6 +93,10 @@ type UserBasicInfo struct {
 	ShortDateFormat      ShortDateFormat      `json:"shortDateFormat"`
 	LongTimeFormat       LongTimeFormat       `json:"longTimeFormat"`
 	ShortTimeFormat      ShortTimeFormat      `json:"shortTimeFormat"`
+	DecimalSeparator     DecimalSeparator     `json:"decimalSeparator"`
+	DigitGroupingSymbol  DigitGroupingSymbol  `json:"digitGroupingSymbol"`
+	DigitGrouping        DigitGroupingType    `json:"digitGrouping"`
+	CurrencyDisplayType  CurrencyDisplayType  `json:"currencyDisplayType"`
 	EmailVerified        bool                 `json:"emailVerified"`
 }
 
@@ -142,6 +150,10 @@ type UserProfileUpdateRequest struct {
 	ShortDateFormat      *ShortDateFormat      `json:"shortDateFormat" binding:"omitempty,min=0,max=3"`
 	LongTimeFormat       *LongTimeFormat       `json:"longTimeFormat" binding:"omitempty,min=0,max=3"`
 	ShortTimeFormat      *ShortTimeFormat      `json:"shortTimeFormat" binding:"omitempty,min=0,max=3"`
+	DecimalSeparator     *DecimalSeparator     `json:"decimalSeparator" binding:"omitempty,min=0,max=3"`
+	DigitGroupingSymbol  *DigitGroupingSymbol  `json:"digitGroupingSymbol" binding:"omitempty,min=0,max=4"`
+	DigitGrouping        *DigitGroupingType    `json:"digitGrouping" binding:"omitempty,min=0,max=2"`
+	CurrencyDisplayType  *CurrencyDisplayType  `json:"currencyDisplayType" binding:"omitempty,min=0,max=7"`
 }
 
 // UserProfileUpdateResponse represents the data returns to frontend after updating profile
@@ -166,6 +178,10 @@ type UserProfileResponse struct {
 	ShortDateFormat      ShortDateFormat      `json:"shortDateFormat"`
 	LongTimeFormat       LongTimeFormat       `json:"longTimeFormat"`
 	ShortTimeFormat      ShortTimeFormat      `json:"shortTimeFormat"`
+	DecimalSeparator     DecimalSeparator     `json:"decimalSeparator"`
+	DigitGroupingSymbol  DigitGroupingSymbol  `json:"digitGroupingSymbol"`
+	DigitGrouping        DigitGroupingType    `json:"digitGrouping"`
+	CurrencyDisplayType  CurrencyDisplayType  `json:"currencyDisplayType"`
 	EmailVerified        bool                 `json:"emailVerified"`
 	LastLoginAt          int64                `json:"lastLoginAt"`
 }
@@ -229,6 +245,10 @@ func (u *User) ToUserBasicInfo() *UserBasicInfo {
 		ShortDateFormat:      u.ShortDateFormat,
 		LongTimeFormat:       u.LongTimeFormat,
 		ShortTimeFormat:      u.ShortTimeFormat,
+		DecimalSeparator:     u.DecimalSeparator,
+		DigitGroupingSymbol:  u.DigitGroupingSymbol,
+		DigitGrouping:        u.DigitGrouping,
+		CurrencyDisplayType:  u.CurrencyDisplayType,
 		EmailVerified:        u.EmailVerified,
 	}
 }
@@ -250,6 +270,10 @@ func (u *User) ToUserProfileResponse() *UserProfileResponse {
 		ShortDateFormat:      u.ShortDateFormat,
 		LongTimeFormat:       u.LongTimeFormat,
 		ShortTimeFormat:      u.ShortTimeFormat,
+		DecimalSeparator:     u.DecimalSeparator,
+		DigitGroupingSymbol:  u.DigitGroupingSymbol,
+		DigitGrouping:        u.DigitGrouping,
+		CurrencyDisplayType:  u.CurrencyDisplayType,
 		EmailVerified:        u.EmailVerified,
 		LastLoginAt:          u.LastLoginUnixTime,
 	}

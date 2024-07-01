@@ -79,9 +79,10 @@
 <script>
 import { mapStores } from 'pinia';
 import { useSettingsStore } from '@/stores/setting.js';
+import { useUserStore } from '@/stores/user.js';
 
 import colorConstants from '@/consts/color.js';
-import { formatPercent } from '@/lib/common.js';
+import { formatPercent } from '@/lib/numeral.js';
 
 export default {
     props: [
@@ -113,7 +114,7 @@ export default {
         }
     },
     computed: {
-        ...mapStores(useSettingsStore),
+        ...mapStores(useSettingsStore, useUserStore),
         validItems: function () {
             let totalValidValue = 0;
 
@@ -272,11 +273,7 @@ export default {
             return this.circumference - allPreviousLength + offset;
         },
         getDisplayCurrency(value, currencyCode) {
-            return this.$locale.getDisplayCurrency(value, currencyCode, {
-                currencyDisplayMode: this.settingsStore.appSettings.currencyDisplayMode,
-                enableThousandsSeparator: this.settingsStore.appSettings.thousandsSeparator,
-                enableDecimalPoint: this.settingsStore.appSettings.decimalPoint,
-            });
+            return this.$locale.formatAmountWithCurrency(this.settingsStore, this.userStore, value, currencyCode);
         }
     }
 }

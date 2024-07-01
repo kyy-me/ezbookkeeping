@@ -6,13 +6,14 @@ import (
 
 	"github.com/gin-gonic/gin/binding"
 
-	"github.com/kyy-me/ezbookkeeping/pkg/core"
-	"github.com/kyy-me/ezbookkeeping/pkg/errs"
-	"github.com/kyy-me/ezbookkeeping/pkg/log"
-	"github.com/kyy-me/ezbookkeeping/pkg/models"
-	"github.com/kyy-me/ezbookkeeping/pkg/services"
-	"github.com/kyy-me/ezbookkeeping/pkg/settings"
-	"github.com/kyy-me/ezbookkeeping/pkg/validators"
+	"github.com/mayswind/ezbookkeeping/pkg/core"
+	"github.com/mayswind/ezbookkeeping/pkg/errs"
+	"github.com/mayswind/ezbookkeeping/pkg/locales"
+	"github.com/mayswind/ezbookkeeping/pkg/log"
+	"github.com/mayswind/ezbookkeeping/pkg/models"
+	"github.com/mayswind/ezbookkeeping/pkg/services"
+	"github.com/mayswind/ezbookkeeping/pkg/settings"
+	"github.com/mayswind/ezbookkeeping/pkg/validators"
 )
 
 // UsersApi represents user api
@@ -334,6 +335,65 @@ func (a *UsersApi) UserUpdateProfileHandler(c *core.Context) (any, *errs.Error) 
 		anythingUpdate = true
 	} else {
 		userNew.ShortTimeFormat = models.SHORT_TIME_FORMAT_INVALID
+	}
+
+	if userUpdateReq.DecimalSeparator != nil && *userUpdateReq.DecimalSeparator != user.DecimalSeparator {
+		user.DecimalSeparator = *userUpdateReq.DecimalSeparator
+		userNew.DecimalSeparator = *userUpdateReq.DecimalSeparator
+		anythingUpdate = true
+	} else {
+		userNew.DecimalSeparator = models.DECIMAL_SEPARATOR_INVALID
+	}
+
+	if userUpdateReq.DigitGroupingSymbol != nil && *userUpdateReq.DigitGroupingSymbol != user.DigitGroupingSymbol {
+		user.DigitGroupingSymbol = *userUpdateReq.DigitGroupingSymbol
+		userNew.DigitGroupingSymbol = *userUpdateReq.DigitGroupingSymbol
+		anythingUpdate = true
+	} else {
+		userNew.DigitGroupingSymbol = models.DIGIT_GROUPING_SYMBOL_INVALID
+	}
+
+	if userUpdateReq.DigitGrouping != nil && *userUpdateReq.DigitGrouping != user.DigitGrouping {
+		user.DigitGrouping = *userUpdateReq.DigitGrouping
+		userNew.DigitGrouping = *userUpdateReq.DigitGrouping
+		anythingUpdate = true
+	} else {
+		userNew.DigitGrouping = models.DIGIT_GROUPING_TYPE_INVALID
+	}
+
+	if userUpdateReq.CurrencyDisplayType != nil && *userUpdateReq.CurrencyDisplayType != user.CurrencyDisplayType {
+		user.CurrencyDisplayType = *userUpdateReq.CurrencyDisplayType
+		userNew.CurrencyDisplayType = *userUpdateReq.CurrencyDisplayType
+		anythingUpdate = true
+	} else {
+		userNew.CurrencyDisplayType = models.CURRENCY_DISPLAY_TYPE_INVALID
+	}
+
+	if modifyUserLanguage || userNew.DecimalSeparator != models.DECIMAL_SEPARATOR_INVALID || userNew.DigitGroupingSymbol != models.DIGIT_GROUPING_SYMBOL_INVALID {
+		decimalSeparator := userNew.DecimalSeparator
+		digitGroupingSymbol := userNew.DigitGroupingSymbol
+
+		if userNew.DecimalSeparator == models.DECIMAL_SEPARATOR_INVALID {
+			decimalSeparator = user.DecimalSeparator
+		}
+
+		if userNew.DigitGroupingSymbol == models.DIGIT_GROUPING_SYMBOL_INVALID {
+			digitGroupingSymbol = user.DigitGroupingSymbol
+		}
+
+		locale := user.Language
+
+		if modifyUserLanguage {
+			locale = userNew.Language
+		}
+
+		if locale == "" {
+			locale = c.GetClientLocale()
+		}
+
+		if locales.IsDecimalSeparatorEqualsDigitGroupingSymbol(decimalSeparator, digitGroupingSymbol, locale) {
+			return nil, errs.ErrDecimalSeparatorAndDigitGroupingSymbolCannotBeEqual
+		}
 	}
 
 	if !anythingUpdate {

@@ -25,7 +25,7 @@
             </f7-subnavbar>
         </f7-navbar>
 
-        <f7-toolbar tabbar bottom class="toolbar-item-auto-size">
+        <f7-toolbar tabbar bottom class="toolbar-item-auto-size transaction-list-toolbar">
             <f7-link :class="{ 'disabled': loading || query.dateType === allDateRanges.All.type }" @click="shiftDateRange(query.minTime, query.maxTime, -1)">
                 <f7-icon f7="arrow_left_square"></f7-icon>
             </f7-link>
@@ -35,14 +35,14 @@
             <f7-link :class="{ 'disabled': loading || query.dateType === allDateRanges.All.type }" @click="shiftDateRange(query.minTime, query.maxTime, 1)">
                 <f7-icon f7="arrow_right_square"></f7-icon>
             </f7-link>
-            <f7-link class="tabbar-text-with-ellipsis" popover-open=".type-popover-menu">
-                <span :class="{ 'tabbar-item-changed': query.type > 0 }">{{ queryTransactionTypeName }}</span>
-            </f7-link>
             <f7-link class="tabbar-text-with-ellipsis" popover-open=".category-popover-menu" :class="{ 'disabled': query.type === 1 }">
                 <span :class="{ 'tabbar-item-changed': query.categoryId > 0 }">{{ queryCategoryName }}</span>
             </f7-link>
             <f7-link class="tabbar-text-with-ellipsis" popover-open=".account-popover-menu">
                 <span :class="{ 'tabbar-item-changed': query.accountId > 0 }">{{ queryAccountName }}</span>
+            </f7-link>
+            <f7-link popover-open=".more-popover-menu">
+                <f7-icon f7="ellipsis_vertical" :class="{ 'tabbar-item-changed': query.type > 0 || query.amountFilter }"></f7-icon>
             </f7-link>
         </f7-toolbar>
 
@@ -137,10 +137,10 @@
                                         <span>{{ getDisplayYearMonth(transactionMonthList) }}</span>
                                     </small>
                                     <small class="transaction-amount-statistics" v-if="showTotalAmountInTransactionListPage && transactionMonthList.totalAmount">
-                                        <span class="text-color-teal">
+                                        <span class="text-color-red">
                                             {{ getDisplayMonthTotalAmount(transactionMonthList.totalAmount.income, defaultCurrency, '+', transactionMonthList.totalAmount.incompleteIncome) }}
                                         </span>
-                                        <span class="text-color-red">
+                                        <span class="text-color-teal">
                                             {{ getDisplayMonthTotalAmount(transactionMonthList.totalAmount.expense, defaultCurrency, '-', transactionMonthList.totalAmount.incompleteExpense) }}
                                         </span>
                                     </small>
@@ -199,7 +199,7 @@
                                             </div>
                                             <div class="item-after">
                                                 <div class="transaction-amount" v-if="transaction.sourceAccount"
-                                                     :class="{ 'text-color-red': transaction.type === allTransactionTypes.Expense, 'text-color-teal': transaction.type === allTransactionTypes.Income }">
+                                                     :class="{ 'text-color-teal': transaction.type === allTransactionTypes.Expense, 'text-color-red': transaction.type === allTransactionTypes.Income }">
                                                     <span v-if="!query.accountId || query.accountId === '0' || (transaction.sourceAccount && (transaction.sourceAccount.id === query.accountId || transaction.sourceAccount.parentId === query.accountId))">{{ getDisplayAmount(transaction.sourceAmount, transaction.sourceAccount.currency, transaction.hideAmount) }}</span>
                                                     <span v-else-if="query.accountId && query.accountId !== '0' && transaction.destinationAccount && (transaction.destinationAccount.id === query.accountId || transaction.destinationAccount.parentId === query.accountId)">{{ getDisplayAmount(transaction.destinationAmount, transaction.destinationAccount.currency, transaction.hideAmount) }}</span>
                                                     <span v-else></span>
@@ -279,38 +279,6 @@
                                     v-model:show="showCustomDateRangeSheet"
                                     @dateRange:change="changeCustomDateFilter">
         </date-range-selection-sheet>
-
-        <f7-popover class="type-popover-menu"
-                    v-model:opened="showTypePopover"
-                    @popover:open="scrollPopoverToSelectedItem">
-            <f7-list dividers>
-                <f7-list-item :class="{ 'list-item-selected': query.type === 0 }" :title="$t('All')" @click="changeTypeFilter(0)">
-                    <template #after>
-                        <f7-icon class="list-item-checked-icon" f7="checkmark_alt" v-if="query.type === 0"></f7-icon>
-                    </template>
-                </f7-list-item>
-                <f7-list-item :class="{ 'list-item-selected': query.type === 1 }" :title="$t('Modify Balance')" @click="changeTypeFilter(1)">
-                    <template #after>
-                        <f7-icon class="list-item-checked-icon" f7="checkmark_alt" v-if="query.type === 1"></f7-icon>
-                    </template>
-                </f7-list-item>
-                <f7-list-item :class="{ 'list-item-selected': query.type === 2 }" :title="$t('Income')" @click="changeTypeFilter(2)">
-                    <template #after>
-                        <f7-icon class="list-item-checked-icon" f7="checkmark_alt" v-if="query.type === 2"></f7-icon>
-                    </template>
-                </f7-list-item>
-                <f7-list-item :class="{ 'list-item-selected': query.type === 3 }" :title="$t('Expense')" @click="changeTypeFilter(3)">
-                    <template #after>
-                        <f7-icon class="list-item-checked-icon" f7="checkmark_alt" v-if="query.type === 3"></f7-icon>
-                    </template>
-                </f7-list-item>
-                <f7-list-item :class="{ 'list-item-selected': query.type === 4 }" :title="$t('Transfer')" @click="changeTypeFilter(4)">
-                    <template #after>
-                        <f7-icon class="list-item-checked-icon" f7="checkmark_alt" v-if="query.type === 4"></f7-icon>
-                    </template>
-                </f7-list-item>
-            </f7-list>
-        </f7-popover>
 
         <f7-popover class="category-popover-menu"
                     v-model:opened="showCategoryPopover"
@@ -406,6 +374,55 @@
             </f7-list>
         </f7-popover>
 
+        <f7-popover class="more-popover-menu"
+                    v-model:opened="showMorePopover">
+            <f7-list dividers>
+                <f7-list-item group-title :title="$t('Type')" />
+                <f7-list-item :class="{ 'list-item-selected': query.type === 0 }" :title="$t('All')" @click="changeTypeFilter(0)">
+                    <template #after>
+                        <f7-icon class="list-item-checked-icon" f7="checkmark_alt" v-if="query.type === 0"></f7-icon>
+                    </template>
+                </f7-list-item>
+                <f7-list-item :class="{ 'list-item-selected': query.type === 1 }" :title="$t('Modify Balance')" @click="changeTypeFilter(1)">
+                    <template #after>
+                        <f7-icon class="list-item-checked-icon" f7="checkmark_alt" v-if="query.type === 1"></f7-icon>
+                    </template>
+                </f7-list-item>
+                <f7-list-item :class="{ 'list-item-selected': query.type === 2 }" :title="$t('Income')" @click="changeTypeFilter(2)">
+                    <template #after>
+                        <f7-icon class="list-item-checked-icon" f7="checkmark_alt" v-if="query.type === 2"></f7-icon>
+                    </template>
+                </f7-list-item>
+                <f7-list-item :class="{ 'list-item-selected': query.type === 3 }" :title="$t('Expense')" @click="changeTypeFilter(3)">
+                    <template #after>
+                        <f7-icon class="list-item-checked-icon" f7="checkmark_alt" v-if="query.type === 3"></f7-icon>
+                    </template>
+                </f7-list-item>
+                <f7-list-item :class="{ 'list-item-selected': query.type === 4 }" :title="$t('Transfer')" @click="changeTypeFilter(4)">
+                    <template #after>
+                        <f7-icon class="list-item-checked-icon" f7="checkmark_alt" v-if="query.type === 4"></f7-icon>
+                    </template>
+                </f7-list-item>
+
+                <f7-list-item group-title :title="$t('Amount')" />
+                <f7-list-item :class="{ 'list-item-selected': !query.amountFilter }" :title="$t('All')" @click="changeAmountFilter('')">
+                    <template #after>
+                        <f7-icon class="list-item-checked-icon" f7="checkmark_alt" v-if="!query.amountFilter"></f7-icon>
+                    </template>
+                </f7-list-item>
+                <f7-list-item :key="filterType.type"
+                              :class="{ 'list-item-selected': query.amountFilter && query.amountFilter.startsWith(`${filterType.type}:`) }"
+                              :title="$t(filterType.name)"
+                              v-for="filterType in allAmountFilterTypes"
+                              @click="changeAmountFilter(filterType.type)">
+                    <template #after>
+                        <span class="margin-right-half" v-if="query.amountFilter && query.amountFilter.startsWith(`${filterType.type}:`)">{{ queryAmount }}</span>
+                        <f7-icon class="list-item-checked-icon" f7="checkmark_alt" v-if="query.amountFilter && query.amountFilter.startsWith(`${filterType.type}:`)"></f7-icon>
+                    </template>
+                </f7-list-item>
+            </f7-list>
+        </f7-popover>
+
         <f7-actions close-by-outside-click close-on-escape :opened="showDeleteActionSheet" @actions:closed="showDeleteActionSheet = false">
             <f7-actions-group>
                 <f7-actions-label>{{ $t('Are you sure you want to delete this transaction?') }}</f7-actions-label>
@@ -426,6 +443,7 @@ import { useAccountsStore } from '@/stores/account.js';
 import { useTransactionCategoriesStore } from '@/stores/transactionCategory.js';
 import { useTransactionsStore } from '@/stores/transaction.js';
 
+import numeralConstants from '@/consts/numeral.js';
 import datetimeConstants from '@/consts/datetime.js';
 import currencyConstants from '@/consts/currency.js';
 import accountConstants from '@/consts/account.js';
@@ -459,9 +477,9 @@ export default {
             customMaxDatetime: 0,
             transactionToDelete: null,
             showDatePopover: false,
-            showTypePopover: false,
             showCategoryPopover: false,
             showAccountPopover: false,
+            showMorePopover: false,
             showCustomDateRangeSheet: false,
             showDeleteActionSheet: false
         };
@@ -512,14 +530,30 @@ export default {
         queryMaxTime() {
             return this.$locale.formatUnixTimeToLongDateTime(this.userStore, this.query.maxTime);
         },
-        queryTransactionTypeName() {
-            return this.getTransactionTypeName(this.query.type, 'Type');
-        },
         queryCategoryName() {
             return getNameByKeyValue(this.allCategories, this.query.categoryId, null, 'name', this.$t('Category'));
         },
         queryAccountName() {
             return getNameByKeyValue(this.allAccounts, this.query.accountId, null, 'name', this.$t('Account'));
+        },
+        queryAmount() {
+            if (!this.query.amountFilter) {
+                return '';
+            }
+
+            const amountFilterItems = this.query.amountFilter.split(':');
+
+            if (amountFilterItems.length < 2) {
+                return '';
+            }
+
+            const displayAmount = [];
+
+            for (let i = 1; i < amountFilterItems.length; i++) {
+                displayAmount.push(this.getDisplayCurrency(amountFilterItems[i], false));
+            }
+
+            return displayAmount.join(' ~ ');
         },
         transactions() {
             if (this.loading) {
@@ -533,6 +567,9 @@ export default {
         },
         hasMoreTransaction() {
             return this.transactionsStore.hasMoreTransaction;
+        },
+        allAmountFilterTypes() {
+            return numeralConstants.allAmountFilterTypeArray;
         },
         allTransactionTypes() {
             return transactionConstants.allTransactionTypes;
@@ -753,7 +790,7 @@ export default {
                 categoryId: removeCategoryFilter ? '0' : undefined
             });
 
-            this.showTypePopover = false;
+            this.showMorePopover = false;
             this.reload(null);
         },
         changeCategoryFilter(categoryId) {
@@ -778,6 +815,24 @@ export default {
             });
 
             this.showAccountPopover = false;
+            this.reload(null);
+        },
+        changeAmountFilter(filterType) {
+            if (this.query.amountFilter === filterType) {
+                return;
+            }
+
+            if (filterType) {
+                this.showMorePopover = false;
+                this.f7router.navigate(`/transaction/filter/amount?type=${filterType}&value=${this.query.amountFilter}`);
+                return;
+            }
+
+            this.transactionsStore.updateTransactionListFilter({
+                amountFilter: filterType
+            });
+
+            this.showMorePopover = false;
             this.reload(null);
         },
         changeKeywordFilter(keyword) {
@@ -870,11 +925,7 @@ export default {
             return symbol + displayAmount + (incomplete ? '+' : '');
         },
         getDisplayCurrency(value, currencyCode) {
-            return this.$locale.getDisplayCurrency(value, currencyCode, {
-                currencyDisplayMode: this.settingsStore.appSettings.currencyDisplayMode,
-                enableThousandsSeparator: this.settingsStore.appSettings.thousandsSeparator,
-                enableDecimalPoint: this.settingsStore.appSettings.decimalPoint,
-            });
+            return this.$locale.formatAmountWithCurrency(this.settingsStore, this.userStore, value, currencyCode);
         },
         getWeekdayShortName(transaction) {
             return this.$locale.getWeekdayShortName(transaction.dayOfWeek);
@@ -930,6 +981,10 @@ export default {
 </script>
 
 <style>
+.transaction-list-toolbar .toolbar-inner {
+    padding-right: 8px;
+}
+
 .list.transaction-amount-list .transaction-amount-statistics {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1011,7 +1066,10 @@ export default {
     text-overflow: ellipsis;
 }
 
-.date-popover-menu .popover-inner, .category-popover-menu .popover-inner, .account-popover-menu .popover-inner {
+.date-popover-menu .popover-inner,
+.category-popover-menu .popover-inner,
+.account-popover-menu .popover-inner,
+.more-popover-menu .popover-inner{
     max-height: 400px;
     overflow-y: auto;
 }
