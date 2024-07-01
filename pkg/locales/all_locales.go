@@ -1,6 +1,6 @@
 package locales
 
-import "github.com/mayswind/ezbookkeeping/pkg/models"
+import "github.com/kyy-me/ezbookkeeping/pkg/models"
 
 // DefaultLanguage represents the default language
 var DefaultLanguage = en

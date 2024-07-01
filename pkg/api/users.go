@@ -6,14 +6,14 @@ import (
 
 	"github.com/gin-gonic/gin/binding"
 
-	"github.com/mayswind/ezbookkeeping/pkg/core"
-	"github.com/mayswind/ezbookkeeping/pkg/errs"
-	"github.com/mayswind/ezbookkeeping/pkg/locales"
-	"github.com/mayswind/ezbookkeeping/pkg/log"
-	"github.com/mayswind/ezbookkeeping/pkg/models"
-	"github.com/mayswind/ezbookkeeping/pkg/services"
-	"github.com/mayswind/ezbookkeeping/pkg/settings"
-	"github.com/mayswind/ezbookkeeping/pkg/validators"
+	"github.com/kyy-me/ezbookkeeping/pkg/core"
+	"github.com/kyy-me/ezbookkeeping/pkg/errs"
+	"github.com/kyy-me/ezbookkeeping/pkg/locales"
+	"github.com/kyy-me/ezbookkeeping/pkg/log"
+	"github.com/kyy-me/ezbookkeeping/pkg/models"
+	"github.com/kyy-me/ezbookkeeping/pkg/services"
+	"github.com/kyy-me/ezbookkeeping/pkg/settings"
+	"github.com/kyy-me/ezbookkeeping/pkg/validators"
 )
 
 // UsersApi represents user api

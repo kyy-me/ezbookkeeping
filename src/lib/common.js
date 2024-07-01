@@ -1,9 +1,9 @@
 export function isFunction(val) {
-    return typeof(val) === 'function';
+    return typeof val === "function";
 }
 
 export function isObject(val) {
-    return val != null && typeof(val) === 'object' && !isArray(val);
+    return val != null && typeof val === "object" && !isArray(val);
 }
 
 export function isArray(val) {
@@ -11,27 +11,27 @@ export function isArray(val) {
         return Array.isArray(val);
     }
 
-    return Object.prototype.toString.call(val) === '[object Array]';
+    return Object.prototype.toString.call(val) === "[object Array]";
 }
 
 export function isString(val) {
-    return typeof(val) === 'string';
+    return typeof val === "string";
 }
 
 export function isNumber(val) {
-    return typeof(val) === 'number';
+    return typeof val === "number";
 }
 
 export function isBoolean(val) {
-    return typeof(val) === 'boolean';
+    return typeof val === "boolean";
 }
 
 export function isYearMonth(val) {
-    if (typeof(val) !== 'string') {
+    if (typeof val !== "string") {
         return false;
     }
 
-    const items = val.split('-');
+    const items = val.split("-");
 
     if (items.length !== 2) {
         return false;
@@ -110,11 +110,11 @@ export function getObjectOwnFieldCount(object) {
 }
 
 export function replaceAll(value, originalValue, targetValue) {
-    return value.replaceAll(new RegExp(originalValue, 'g'), targetValue);
+    return value.replaceAll(new RegExp(originalValue, "g"), targetValue);
 }
 
 export function removeAll(value, originalValue) {
-    return replaceAll(value, originalValue, '');
+    return replaceAll(value, originalValue, "");
 }
 
 export function limitText(value, maxLength) {
@@ -134,7 +134,7 @@ export function limitText(value, maxLength) {
         return value;
     }
 
-    return value.substring(0, maxLength - 3) + '...';
+    return value.substring(0, maxLength - 3) + "...";
 }
 
 export function getTextBefore(fullText, text) {
@@ -148,7 +148,7 @@ export function getTextBefore(fullText, text) {
         return fullText.substring(0, index);
     }
 
-    return '';
+    return "";
 }
 
 export function getTextAfter(fullText, text) {
@@ -163,7 +163,7 @@ export function getTextAfter(fullText, text) {
         return fullText.substring(index);
     }
 
-    return '';
+    return "";
 }
 
 export function base64encode(arrayBuffer) {
@@ -176,7 +176,7 @@ export function base64encode(arrayBuffer) {
 
 export function base64decode(str) {
     if (!str) {
-        return '';
+        return "";
     }
 
     return atob(str);
@@ -186,8 +186,8 @@ export function arrayBufferToString(arrayBuffer) {
     return String.fromCharCode.apply(null, new Uint8Array(arrayBuffer));
 }
 
-export function stringToArrayBuffer(str){
-    return Uint8Array.from(str, c => c.charCodeAt(0)).buffer;
+export function stringToArrayBuffer(str) {
+    return Uint8Array.from(str, (c) => c.charCodeAt(0)).buffer;
 }
 
 export function getFirstItem(items) {
@@ -234,7 +234,13 @@ export function getItemByKeyValue(src, value, keyField) {
     return null;
 }
 
-export function getNameByKeyValue(src, value, keyField, nameField, defaultName) {
+export function getNameByKeyValue(
+    src,
+    value,
+    keyField,
+    nameField,
+    defaultName
+) {
     if (isArray(src)) {
         if (keyField) {
             for (let i = 0; i < src.length; i++) {
@@ -377,11 +383,19 @@ export function categorizedArrayToPlainArray(object) {
     return ret;
 }
 
-export function isPrimaryItemHasSecondaryValue(primaryItem, primarySubItemsField, secondaryValueField, secondaryValue) {
+export function isPrimaryItemHasSecondaryValue(
+    primaryItem,
+    primarySubItemsField,
+    secondaryValueField,
+    secondaryValue
+) {
     for (let i = 0; i < primaryItem[primarySubItemsField].length; i++) {
         const secondaryItem = primaryItem[primarySubItemsField][i];
 
-        if (secondaryValueField && secondaryItem[secondaryValueField] === secondaryValue) {
+        if (
+            secondaryValueField &&
+            secondaryItem[secondaryValueField] === secondaryValue
+        ) {
             return true;
         } else if (!secondaryValueField && secondaryItem === secondaryValue) {
             return true;
@@ -391,13 +405,26 @@ export function isPrimaryItemHasSecondaryValue(primaryItem, primarySubItemsField
     return false;
 }
 
-export function getPrimaryValueBySecondaryValue(items, primarySubItemsField, primaryValueField, secondaryValueField, secondaryValue) {
+export function getPrimaryValueBySecondaryValue(
+    items,
+    primarySubItemsField,
+    primaryValueField,
+    secondaryValueField,
+    secondaryValue
+) {
     if (primarySubItemsField) {
         if (isArray(items)) {
             for (let i = 0; i < items.length; i++) {
                 const primaryItem = items[i];
 
-                if (isPrimaryItemHasSecondaryValue(primaryItem, primarySubItemsField, secondaryValueField, secondaryValue)) {
+                if (
+                    isPrimaryItemHasSecondaryValue(
+                        primaryItem,
+                        primarySubItemsField,
+                        secondaryValueField,
+                        secondaryValue
+                    )
+                ) {
                     if (primaryValueField) {
                         return primaryItem[primaryValueField];
                     } else {
@@ -413,7 +440,14 @@ export function getPrimaryValueBySecondaryValue(items, primarySubItemsField, pri
 
                 const primaryItem = items[field];
 
-                if (isPrimaryItemHasSecondaryValue(primaryItem, primarySubItemsField, secondaryValueField, secondaryValue)) {
+                if (
+                    isPrimaryItemHasSecondaryValue(
+                        primaryItem,
+                        primarySubItemsField,
+                        secondaryValueField,
+                        secondaryValue
+                    )
+                ) {
                     if (primaryValueField) {
                         return primaryItem[primaryValueField];
                     } else {
@@ -443,4 +477,56 @@ export function arrangeArrayWithNewStartIndex(array, startIndex) {
     }
 
     return newArray;
+}
+export function appendThousandsSeparator(value, enable) {
+    if (!enable || value.length <= 3) {
+        return value;
+    }
+
+    const negative = value.charAt(0) === "-";
+
+    if (negative) {
+        value = value.substring(1);
+    }
+
+    const dotPos = value.indexOf(".");
+    const integer = dotPos < 0 ? value : value.substring(0, dotPos);
+    const decimals =
+        dotPos < 0 ? "" : value.substring(dotPos + 1, value.length);
+
+    const finalChars = [];
+
+    for (let i = 0; i < integer.length; i++) {
+        if (i % 3 === 0 && i > 0) {
+            finalChars.push(",");
+        }
+
+        finalChars.push(integer.charAt(integer.length - 1 - i));
+    }
+
+    finalChars.reverse();
+
+    let newInteger = finalChars.join("");
+
+    if (negative) {
+        newInteger = `-${newInteger}`;
+    }
+
+    if (dotPos < 0) {
+        return newInteger;
+    } else {
+        return `${newInteger}.${decimals}`;
+    }
+}
+
+export function formatPercent(value, precision, lowPrecisionValue) {
+    const ratio = Math.pow(10, precision);
+    const normalizedValue = Math.floor(value * ratio);
+
+    if (value > 0 && normalizedValue < 1 && lowPrecisionValue) {
+        return lowPrecisionValue + "%";
+    }
+
+    const result = normalizedValue / ratio;
+    return result + "%";
 }

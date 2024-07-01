@@ -6,11 +6,11 @@ import (
 
 	"github.com/urfave/cli/v2"
 
-	clis "github.com/mayswind/ezbookkeeping/pkg/cli"
-	"github.com/mayswind/ezbookkeeping/pkg/errs"
-	"github.com/mayswind/ezbookkeeping/pkg/log"
-	"github.com/mayswind/ezbookkeeping/pkg/models"
-	"github.com/mayswind/ezbookkeeping/pkg/utils"
+	clis "github.com/kyy-me/ezbookkeeping/pkg/cli"
+	"github.com/kyy-me/ezbookkeeping/pkg/errs"
+	"github.com/kyy-me/ezbookkeeping/pkg/log"
+	"github.com/kyy-me/ezbookkeeping/pkg/models"
+	"github.com/kyy-me/ezbookkeeping/pkg/utils"
 )
 
 // UserData represents the data command
